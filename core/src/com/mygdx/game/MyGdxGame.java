@@ -28,6 +28,10 @@ public class MyGdxGame implements ApplicationListener {
     private Array<Rectangle> raindrops;
     private long lastDropTime;
 
+    private int height = 800;
+    private int width = 480;
+
+
     @Override
     public void create() {
         System.out.println("Did this apllication start?");
@@ -45,13 +49,13 @@ public class MyGdxGame implements ApplicationListener {
 
         // create the camera and the SpriteBatch
         camera = new OrthographicCamera();
-        camera.setToOrtho(false, 800, 480);
+        camera.setToOrtho(false, height, width);
         batch = new SpriteBatch();
 
         // create a Rectangle to logically represent the bucket
         bucket = new Rectangle();
-        bucket.x = 800 / 2 - 64 / 2; // center the bucket horizontally
-        bucket.y = 20; // bottom left corner of the bucket is 20 pixels above the bottom screen edge
+        bucket.x = height / 2 - 64 / 2; // center the bucket horizontally
+        bucket.y = width - bucket.getHeight() - 150; // bottom left corner of the bucket is 20 pixels above the bottom screen edge
         bucket.width = 64;
         bucket.height = 64;
 
@@ -62,8 +66,8 @@ public class MyGdxGame implements ApplicationListener {
 
     private void spawnRaindrop() {
         Rectangle raindrop = new Rectangle();
-        raindrop.x = MathUtils.random(0, 800-64);
-        raindrop.y = 480;
+        raindrop.x = MathUtils.random(0, height-64);
+        raindrop.y = width;
         raindrop.width = 64;
         raindrop.height = 64;
         raindrops.add(raindrop);
@@ -102,12 +106,13 @@ public class MyGdxGame implements ApplicationListener {
             camera.unproject(touchPos);
             bucket.x = touchPos.x - 64 / 2;
         }
+
         if(Gdx.input.isKeyPressed(Keys.LEFT)) bucket.x -= 200 * Gdx.graphics.getDeltaTime();
         if(Gdx.input.isKeyPressed(Keys.RIGHT)) bucket.x += 200 * Gdx.graphics.getDeltaTime();
 
         // make sure the bucket stays within the screen bounds
         if(bucket.x < 0) bucket.x = 0;
-        if(bucket.x > 800 - 64) bucket.x = 800 - 64;
+        if(bucket.x > height - 64) bucket.x = height - 64;
 
         // check if we need to create a new raindrop
         if(TimeUtils.nanoTime() - lastDropTime > 1000000000) spawnRaindrop();
