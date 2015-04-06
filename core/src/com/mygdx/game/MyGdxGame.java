@@ -9,8 +9,6 @@ public class MyGdxGame extends Game {
     public SpriteBatch batch;
     public BitmapFont font;
 
-    private int height = 800;
-    private int width = 1280;
 
     @Override
     public void create() {

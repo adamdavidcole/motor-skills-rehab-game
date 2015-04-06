@@ -28,8 +28,9 @@ public class GameScreen implements Screen {
     public Array<Rectangle> raindrops;
     public long lastDropTime;
     public int dropsGathered;
-    private int height = 800;
-    private int width = 480;
+    private int height = 1280;
+    private int width = 800;
+
 
 
     public GameScreen(final MyGdxGame gam) {
@@ -46,12 +47,12 @@ public class GameScreen implements Screen {
 
         // create the camera and the SpriteBatch
         camera = new OrthographicCamera();
-        camera.setToOrtho(false, height, width);
+        camera.setToOrtho(false, width, height);
 
         // create a Rectangle to logically represent the bucket
         bucket = new Rectangle();
         bucket.x = height / 2 - 64 / 2; // center the bucket horizontally
-        bucket.y = width - bucket.getHeight() - 150; // bottom left corner of the bucket is 20 pixels above the bottom screen edge
+        bucket.y = height - bucket.getHeight() - 150; // bottom left corner of the bucket is 20 pixels above the bottom screen edge
         bucket.width = 64;
         bucket.height = 64;
 
@@ -90,7 +91,7 @@ public class GameScreen implements Screen {
         // begin a new batch and draw the bucket and
         // all drops
         game.batch.begin();
-        game.font.draw(game.batch, "Coins Collected: " + dropsGathered, 0, width);
+        game.font.draw(game.batch, "Coins Collected: " + dropsGathered, 0, height);
         game.batch.draw(bucketImage, bucket.x, bucket.y);
         for (Rectangle raindrop : raindrops) {
             game.batch.draw(dropImage, raindrop.x, raindrop.y);
