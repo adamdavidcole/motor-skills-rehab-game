@@ -34,7 +34,7 @@ public class MyGdxGame implements ApplicationListener {
     // yo
     @Override
     public void create() {
-        System.out.println("Did this apllication start?");
+        System.out.println("Did this application start?");
         // load the images for the droplet and the bucket, 64x64 pixels each
         dropImage = new Texture(Gdx.files.internal("coin.png"));
         bucketImage = new Texture(Gdx.files.internal("bucket.png"));
