@@ -31,7 +31,7 @@ public class MyGdxGame implements ApplicationListener {
     private int height = 800;
     private int width = 480;
 
-    //anthony git test
+    // yo
     @Override
     public void create() {
         System.out.println("Did this apllication start?");
