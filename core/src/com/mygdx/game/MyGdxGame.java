@@ -9,6 +9,10 @@ public class MyGdxGame extends Game {
     public SpriteBatch batch;
     public BitmapFont font;
 
+    private int height = 800;
+    private int width = 480;
+
+    @Override
     public void create() {
         batch = new SpriteBatch();
         //Use LibGDX's default Arial font.
