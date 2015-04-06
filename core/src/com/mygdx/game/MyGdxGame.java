@@ -1,7 +1,5 @@
 package com.mygdx.game;
 
-import java.util.Iterator;
-
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -17,6 +15,8 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
 
+import java.util.Iterator;
+
 public class MyGdxGame implements ApplicationListener {
     private Texture dropImage;
     private Texture bucketImage;
@@ -31,7 +31,7 @@ public class MyGdxGame implements ApplicationListener {
     private int height = 800;
     private int width = 480;
 
-
+    //anthony git test
     @Override
     public void create() {
         System.out.println("Did this apllication start?");
