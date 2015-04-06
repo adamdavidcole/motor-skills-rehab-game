@@ -36,7 +36,7 @@ public class MyGdxGame implements ApplicationListener {
     public void create() {
         System.out.println("Did this apllication start?");
         // load the images for the droplet and the bucket, 64x64 pixels each
-        dropImage = new Texture(Gdx.files.internal("droplet.png"));
+        dropImage = new Texture(Gdx.files.internal("coin.png"));
         bucketImage = new Texture(Gdx.files.internal("bucket.png"));
 
         // load the drop sound effect and the rain background "music"
@@ -67,7 +67,7 @@ public class MyGdxGame implements ApplicationListener {
     private void spawnRaindrop() {
         Rectangle raindrop = new Rectangle();
         raindrop.x = MathUtils.random(0, height-64);
-        raindrop.y = width;
+        raindrop.y = 0;
         raindrop.width = 64;
         raindrop.height = 64;
         raindrops.add(raindrop);
@@ -123,7 +123,7 @@ public class MyGdxGame implements ApplicationListener {
         Iterator<Rectangle> iter = raindrops.iterator();
         while(iter.hasNext()) {
             Rectangle raindrop = iter.next();
-            raindrop.y -= 200 * Gdx.graphics.getDeltaTime();
+            raindrop.y += 200 * Gdx.graphics.getDeltaTime();
             if(raindrop.y + 64 < 0) iter.remove();
             if(raindrop.overlaps(bucket)) {
                 //dropSound.play();
