@@ -29,12 +29,12 @@ public class MyGdxGame implements ApplicationListener {
     private long lastDropTime;
 
     private int height = 800;
-    private int width = 480;
+    private int width = 1280;
 
     // yo
     @Override
     public void create() {
-        System.out.println("Did this apllication start?");
+        System.out.println("Apllication started?");
         // load the images for the droplet and the bucket, 64x64 pixels each
         dropImage = new Texture(Gdx.files.internal("coin.png"));
         bucketImage = new Texture(Gdx.files.internal("bucket.png"));
