@@ -4,43 +4,31 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.TimeUtils;
-
-import java.util.Iterator;
 
 
 public class GameScreen implements Screen {
     final MyGdxGame game;
-    public Texture coinImage;
-    public Texture characterImage;
-    public Sound coinSound;
-    public Music rainMusic;
-    public OrthographicCamera camera;
-    public Rectangle character;
-    public Array<Rectangle> coins;
-    public long lastCoinTime;
-    public int coinsGathered;
+    private Texture characterImage;
+    private Music rainMusic;
+    private OrthographicCamera camera;
+    private Rectangle character;
     private int height = 1280;
     private int width = 800;
+    private CoinPath cp;
 
 
     public GameScreen(final MyGdxGame gam) {
         this.game = gam;
 
-        // load the images for the coin and the irishman, 64x64 pixels each
-        coinImage = new Texture(Gdx.files.internal("coin.png"));
+        // load the image for the irishman, 64x64 pixels
         characterImage = new Texture(Gdx.files.internal("bucket.png"));
 
-        // load the coin sound effect and the rain background "music"
-        //coinSound = Gdx.audio.newSound(Gdx.files.internal("coin.wav"));
+        // load the rain background "music"
         //rainMusic = Gdx.audio.newMusic(Gdx.files.internal("rain.mp3"));
         //rainMusic.setLooping(true);
 
@@ -51,24 +39,12 @@ public class GameScreen implements Screen {
         // create a Rectangle to logically represent the character
         character = new Rectangle();
         character.x = height / 2 - 64 / 2; // center the character horizontally
-        character.y = width - character.getHeight() - 150; // bottom left corner of the character is 20 pixels above the bottom screen edge
+        character.y = height - character.getHeight() - 150; // bottom left corner of the character is 20 pixels above the bottom screen edge
         character.width = 64;
         character.height = 64;
 
-        // create the coin array and spawn the first coin
-        coins = new Array<Rectangle>();
-        spawnCoin();
-
-    }
-
-    private void spawnCoin() {
-        Rectangle coin = new Rectangle();
-        coin.x = MathUtils.random(0, height-64);
-        coin.y = 0;
-        coin.width = 64;
-        coin.height = 64;
-        coins.add(coin);
-        lastCoinTime = TimeUtils.nanoTime();
+        // create the coin path
+        cp = new CoinPath(width, height);
     }
 
     @Override
@@ -89,11 +65,9 @@ public class GameScreen implements Screen {
 
         // begin a new batch and draw the character and all coins
         game.batch.begin();
-        game.font.draw(game.batch, "Coins Collected: " + coinsGathered, 0, width);
+        game.font.draw(game.batch, "Coins Collected: " + "IMPLEMENT SCOREBOARD", 0, height);
         game.batch.draw(characterImage, character.x, character.y);
-        for (Rectangle c : coins) {
-            game.batch.draw(coinImage, c.x, c.y);
-        }
+        cp.renderCoinPath(game.batch);
         game.batch.end();
 
         // process user input
@@ -111,28 +85,11 @@ public class GameScreen implements Screen {
         // make sure the character stays within the screen bounds
         if (character.x < 0)
             character.x = 0;
-        if (character.x > height - 64)
-            character.x = height - 64;
+        if (character.x > width - 64)
+            character.x = width - 64;
 
-        // check if we need to create a new coin
-        if (TimeUtils.nanoTime() - lastCoinTime > 1000000000)
-            spawnCoin();
-
-        // move the coins, remove any that are beneath the bottom edge of
-        // the screen or that hit the character. In the latter case we increase the
-        // value of our coins counter and add a sound effect.
-        Iterator<Rectangle> iter = coins.iterator();
-        while (iter.hasNext()) {
-            Rectangle coin = iter.next();
-            coin.y += 200 * Gdx.graphics.getDeltaTime();
-            if (coin.y + 64 < 0)
-                iter.remove();
-            if (coin.overlaps(character)) {
-                coinsGathered++;
-                //coinSound.play();
-                iter.remove();
-            }
-        }
+        // update the coin path
+        cp.updateCoinPath(character);
     }
 
     @Override
@@ -160,10 +117,9 @@ public class GameScreen implements Screen {
 
     @Override
     public void dispose() {
-        coinImage.dispose();
         characterImage.dispose();
-        //coinSound.dispose();
         //rainMusic.dispose();
+        cp.tearDown();
     }
 
 }
