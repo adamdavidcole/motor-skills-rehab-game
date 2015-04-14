@@ -28,8 +28,8 @@ public class GameScreen implements Screen {
     public Array<Rectangle> coins;
     public long lastCoinTime;
     public int coinsGathered;
-    private int height = 800;
-    private int width = 480;
+    private int height = 1280;
+    private int width = 800;
 
 
     public GameScreen(final MyGdxGame gam) {
@@ -46,7 +46,7 @@ public class GameScreen implements Screen {
 
         // create the camera and the SpriteBatch
         camera = new OrthographicCamera();
-        camera.setToOrtho(false, height, width);
+        camera.setToOrtho(false, width, height);
 
         // create a Rectangle to logically represent the character
         character = new Rectangle();

@@ -9,7 +9,7 @@ public class DesktopLauncher {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
         config.title = "Drop";
         config.width = 800;
-        config.height = 480;
+        config.height = 1280;
 		new LwjglApplication(new MyGdxGame(), config);
 	}
 }
