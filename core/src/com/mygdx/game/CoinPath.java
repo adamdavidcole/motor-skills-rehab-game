@@ -17,7 +17,6 @@ import java.util.Iterator;
  */
 public class CoinPath {
     private Array<Rectangle> coins;
-    private int coinsGathered;
     private long lastCoinTime;
 
     // media files associated with a coin
@@ -32,7 +31,6 @@ public class CoinPath {
         this.width = width;
         this.height = height;
         coins = new Array<Rectangle>();
-        coinsGathered = 0;
         coinImage = new Texture(Gdx.files.internal("coin.png"));
         //coinSound = Gdx.audio.newSound(Gdx.files.internal("coin.wav"));
 
@@ -53,7 +51,8 @@ public class CoinPath {
             if (coin.y > height)
                 iter.remove();
             if (coin.overlaps(character)) {
-                coinsGathered++;
+                Scoreboard sb = Scoreboard.getInstance();
+                sb.addCoin();
                 //coinSound.play();
                 iter.remove();
             }

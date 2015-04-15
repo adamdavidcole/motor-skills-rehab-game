@@ -17,8 +17,8 @@ public class GameScreen implements Screen {
     private Music rainMusic;
     private OrthographicCamera camera;
     private Rectangle character;
-    private int height = 1280;
-    private int width = 800;
+    private final int height = 1280;
+    private final int width = 800;
     private CoinPath cp;
 
 
@@ -63,10 +63,11 @@ public class GameScreen implements Screen {
         // coordinate system specified by the camera.
         game.batch.setProjectionMatrix(camera.combined);
 
-        // begin a new batch and draw the character and all coins
+        // begin a new batch and draw the character and all coins, and scoreboard
         game.batch.begin();
-        game.font.draw(game.batch, "Coins Collected: " + "IMPLEMENT SCOREBOARD", 0, height);
         game.batch.draw(characterImage, character.x, character.y);
+        Scoreboard sb = Scoreboard.getInstance();
+        sb.renderScoreboard(game, height);
         cp.renderCoinPath(game.batch);
         game.batch.end();
 
