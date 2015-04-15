@@ -45,7 +45,7 @@ public class CoinPath {
         if (TimeUtils.nanoTime() - lastCoinTime > 1000000000) {
             spawnCoin();
         }
-        // move the coins, remove any that hit the character or are above the edge of the screen
+        // move the coins, remove any that hit the charShape or are above the edge of the screen
         Iterator<Rectangle> iter = coins.iterator();
         while (iter.hasNext()) {
             Rectangle coin = iter.next();
