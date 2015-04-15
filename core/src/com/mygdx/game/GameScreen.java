@@ -43,8 +43,11 @@ public class GameScreen implements Screen {
         character.width = 64;
         character.height = 64;
 
+        // create the optimal path
+        OptimalPath opt = new OptimalPath(width, height);
+
         // create the coin path
-        cp = new CoinPath(width, height);
+        cp = new CoinPath(width, height, opt);
     }
 
     @Override
