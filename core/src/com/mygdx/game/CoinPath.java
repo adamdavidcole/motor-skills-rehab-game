@@ -30,6 +30,8 @@ public class CoinPath {
     // optimal path on which coins appear
     OptimalPath opt;
 
+    private Sound dropSound;
+
     public CoinPath(int width, int height, OptimalPath opt) {
         this.width = width;
         this.height = height;
@@ -38,6 +40,8 @@ public class CoinPath {
         //coinSound = Gdx.audio.newSound(Gdx.files.internal("coin.wav"));
 
         this.opt = opt;
+
+        dropSound = Gdx.audio.newSound(Gdx.files.internal("coinCollectSound2.wav"));
 
         // spawn the first coin
         spawnCoin();
@@ -58,6 +62,7 @@ public class CoinPath {
             if (coin.overlaps(charShape)) {
                 Scoreboard sb = Scoreboard.getInstance();
                 sb.addCoin();
+                dropSound.play();
                 //coinSound.play();
                 iter.remove();
             }

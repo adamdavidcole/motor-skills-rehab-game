@@ -12,7 +12,6 @@ import com.badlogic.gdx.utils.TimeUtils;
 public class GameScreen implements Screen {
     final MyGdxGame game;
 //    private Texture characterImage;
-    private Music rainMusic;
     private OrthographicCamera camera;
     private OptimalPath opt;
     //private Rectangle charShape;
@@ -27,6 +26,8 @@ public class GameScreen implements Screen {
     private float currentBgY;
     private long lastTimeBg;
     private Long startTime;
+    private Music gameMusic;
+
 
 
 
@@ -35,6 +36,10 @@ public class GameScreen implements Screen {
 
     public GameScreen(final MyGdxGame gam) {
         this.game = gam;
+
+        gameMusic = Gdx.audio.newMusic(Gdx.files.internal("gameSong.mp3"));
+        gameMusic.setLooping(true);
+        gameMusic.play();
 
         // load the image for the irishman, 64x64 pixels
 //        characterImage = new Texture(Gdx.files.internal("bucket.png"));

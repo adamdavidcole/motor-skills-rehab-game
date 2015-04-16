@@ -22,7 +22,7 @@ public class PowerContainer {
         while (iter.hasNext()) {
             Power p = iter.next();
             p.update();
-            if (TimeUtils.millis() - p.getTimeSpawned() > 30000) {
+            if (TimeUtils.millis() - p.getTimeSpawned() > 15000) {
                 //System.out.println("REMOVED POWER");
                 iter.remove();
             }

@@ -15,6 +15,7 @@ import java.util.List;
  */
 public class Character {
     private Texture characterImage;
+    private Texture characterImagePoisoned;
     public Rectangle charShape;
     public PowerContainer powers;
 
@@ -24,6 +25,9 @@ public class Character {
 
     public Character(int sW, int sH) {
         characterImage = new Texture(Gdx.files.internal("charactar-02.png"));
+        characterImagePoisoned = new Texture(Gdx.files.internal("charactar-02-poisoned.png"));
+
+
         charShape = new Rectangle();
 
         // create a Rectangle to logically represent the charShape
@@ -41,7 +45,11 @@ public class Character {
     }
 
     public void render(SpriteBatch batch) {
-        batch.draw(characterImage, charShape.x, charShape.y, charShape.width, charShape.height);
+        if (powers.isPoisoned()) {
+            batch.draw(characterImagePoisoned, charShape.x, charShape.y, charShape.width, charShape.height);
+            System.out.println("posion image");
+        }
+        else batch.draw(characterImage, charShape.x, charShape.y, charShape.width, charShape.height);
     }
 
     public void setX(int x) {
