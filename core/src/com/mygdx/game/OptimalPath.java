@@ -31,8 +31,8 @@ public class OptimalPath {
     private double lastRefPointTime;
     private final double SAMPLE_INTERVAL = 500000000.;  // nanoseconds
 
-    private float maxXRange;
-    private float minXRange;
+    private int maxXRange;
+    private int minXRange;
 
     public OptimalPath(int width, int height) {
         this.width = width;
@@ -74,7 +74,7 @@ public class OptimalPath {
         return xPosition;
     }
 
-    public void updateOptimalPath(Rectangle character) {
+    public void updateOptimalPath(Rectangle charShape) {
         if (TimeUtils.nanoTime() - lastRefPointTime > SAMPLE_INTERVAL) {
             spawnRefPoint();
         }
@@ -85,8 +85,8 @@ public class OptimalPath {
             rp.y += GameScreen.SCROLL_VELOCITY * Gdx.graphics.getDeltaTime();
             if (rp.y > height)
                 iter.remove();
-            if (rp.y >= character.y) {
-                writeToCSV(rp.x, character.x);
+            if (rp.y >= charShape.y) {
+                writeToCSV(rp.x, charShape.x);
                 iter.remove();
             }
         }
@@ -101,7 +101,7 @@ public class OptimalPath {
 
     }
 
-    public void updateRangeOfMotion(float xPos) {
+    public void updateRangeOfMotion(int xPos) {
         if (xPos < minXRange) {
             minXRange = xPos;
         } else if (xPos > maxXRange) {

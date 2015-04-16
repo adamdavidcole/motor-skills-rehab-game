@@ -7,7 +7,7 @@ import com.mygdx.game.MyGdxGame;
 public class DesktopLauncher {
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-        config.title = "Drop";
+        config.title = "Irish Frenzy";
         config.width = 800;
         config.height = 1280;
 		new LwjglApplication(new MyGdxGame(), config);

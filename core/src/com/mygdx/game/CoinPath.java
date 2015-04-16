@@ -44,18 +44,18 @@ public class CoinPath {
 
     }
 
-    public void updateCoinPath(Rectangle character) {
+    public void updateCoinPath(Rectangle charShape) {
         if ((double)TimeUtils.nanoTime() - lastCoinTime > SPAWN_INTERVAL) {
             spawnCoin();
         }
-        // move the coins, remove any that hit the character or are above the edge of the screen
+        // move the coins, remove any that hit the charShape or are above the edge of the screen
         Iterator<Rectangle> iter = coins.iterator();
         while (iter.hasNext()) {
             Rectangle coin = iter.next();
             coin.y += GameScreen.SCROLL_VELOCITY * Gdx.graphics.getDeltaTime();
             if (coin.y > height)
                 iter.remove();
-            if (coin.overlaps(character)) {
+            if (coin.overlaps(charShape)) {
                 Scoreboard sb = Scoreboard.getInstance();
                 sb.addCoin();
                 //coinSound.play();
