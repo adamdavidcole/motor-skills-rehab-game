@@ -30,7 +30,7 @@ public class PowerContainer {
     }
 
     public boolean isPoisoned() {
-        System.out.println(powers.size());
+        //System.out.println(powers.size());
         for (Power p : powers) {
             //System.out.println("we have a power?");
             return true;
