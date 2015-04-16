@@ -3,7 +3,6 @@ package com.mygdx.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
@@ -17,8 +16,8 @@ import java.util.Iterator;
  */
 public class CoinPath {
     private Array<Rectangle> coins;
-    private int coinsGathered;
-    private long lastCoinTime;
+    private double lastCoinTime;
+    private final double SPAWN_INTERVAL = 500000000.;
 
     // media files associated with a coin
     private Texture coinImage;
@@ -28,52 +27,56 @@ public class CoinPath {
     private int width;
     private int height;
 
-    public CoinPath(int width, int height) {
+    // optimal path on which coins appear
+    OptimalPath opt;
+
+    public CoinPath(int width, int height, OptimalPath opt) {
         this.width = width;
         this.height = height;
         coins = new Array<Rectangle>();
-        coinsGathered = 0;
         coinImage = new Texture(Gdx.files.internal("coin.png"));
         //coinSound = Gdx.audio.newSound(Gdx.files.internal("coin.wav"));
+
+        this.opt = opt;
 
         // spawn the first coin
         spawnCoin();
 
     }
 
-    public void updateCoinPath(Rectangle character) {
-        if (TimeUtils.nanoTime() - lastCoinTime > 1000000000) {
+    public void updateCoinPath(Rectangle charShape) {
+        if ((double)TimeUtils.nanoTime() - lastCoinTime > SPAWN_INTERVAL) {
             spawnCoin();
         }
         // move the coins, remove any that hit the charShape or are above the edge of the screen
         Iterator<Rectangle> iter = coins.iterator();
         while (iter.hasNext()) {
             Rectangle coin = iter.next();
-            coin.y += 200 * Gdx.graphics.getDeltaTime();
+            coin.y += GameScreen.SCROLL_VELOCITY * Gdx.graphics.getDeltaTime();
             if (coin.y > height)
                 iter.remove();
-            if (coin.overlaps(character)) {
-                coinsGathered++;
+            if (coin.overlaps(charShape)) {
+                Scoreboard sb = Scoreboard.getInstance();
+                sb.addCoin();
                 //coinSound.play();
                 iter.remove();
             }
         }
-
     }
 
     private void spawnCoin() {
         Rectangle coin = new Rectangle();
-        coin.x = MathUtils.random(0, width - 64);
-        coin.y = 0;
+        coin.x = opt.computeOptimalPath();
+        coin.y = -64;
         coin.width = 64;
         coin.height = 64;
         coins.add(coin);
-        lastCoinTime = TimeUtils.nanoTime();
+        lastCoinTime = (double) TimeUtils.nanoTime();
     }
 
     public void renderCoinPath(SpriteBatch batch) {
         for (Rectangle c : coins) {
-            batch.draw(coinImage, c.x, c.y);
+            batch.draw(coinImage, c.x, c.y, c.width, c.height);
         }
     }
 
@@ -81,6 +84,5 @@ public class CoinPath {
         coinImage.dispose();
         // coinSound.dispose();
     }
-
 
 }

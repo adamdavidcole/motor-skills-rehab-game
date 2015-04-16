@@ -5,6 +5,8 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.utils.TimeUtils;
 
 
 public class GameScreen implements Screen {
@@ -12,6 +14,7 @@ public class GameScreen implements Screen {
 //    private Texture characterImage;
     private Music rainMusic;
     private OrthographicCamera camera;
+    private OptimalPath opt;
     //private Rectangle charShape;
     private int height = 1280;
     private int width = 800;
@@ -19,9 +22,15 @@ public class GameScreen implements Screen {
     private CoinPath cp;
 //    private PoisonBottle pb;
     private PowerPath powerPath;
+//    private Background background;
+    private Texture background;
+    private float currentBgY;
+    private long lastTimeBg;
     private Long startTime;
 
 
+
+    public static int SCROLL_VELOCITY = 200;
 
 
     public GameScreen(final MyGdxGame gam) {
@@ -35,22 +44,33 @@ public class GameScreen implements Screen {
         //rainMusic.setLooping(true);
 
         // create the camera and the SpriteBatch
-        camera = new OrthographicCamera();
+        camera = new OrthographicCamera(width, height);
         camera.setToOrtho(false, width, height);
 
         // create a Rectangle to logically represent the charShape
         character = new Character(width, height);
 
+        // create the optimal path
+        opt = new OptimalPath(width, height);
+
         // create the coin path
-        cp = new CoinPath(width, height);
+        cp = new CoinPath(width, height, opt);
 
         // create the power path
         powerPath = new PowerPath(width, height);
 
+        //create the background
+//        background = new Background(width, height);
         //note time when application starts
         startTime = System.currentTimeMillis();
 
 //        pb = new PoisonBottle();
+        background = new Texture(Gdx.files.internal("cloudBGSmall.png"));
+// the separator first appear at the position 800 (the edge of the screen, see
+// the camera above)
+        currentBgY = height;
+        // set lastTimeBg to current time
+        lastTimeBg = TimeUtils.nanoTime();
     }
 
     @Override
@@ -69,9 +89,14 @@ public class GameScreen implements Screen {
         // coordinate system specified by the camera.
         game.batch.setProjectionMatrix(camera.combined);
 
-        // begin a new batch and draw the charShape and all coins
+        // begin a new batch and draw the charShape and all coins, and scoreboard
         game.batch.begin();
+        game.batch.draw(background, 0, currentBgY - height);
+        game.batch.draw(background, 0, currentBgY);
+
         game.font.draw(game.batch, "Coins Collected: " + "IMPLEMENT SCOREBOARD", 0, height);
+        Scoreboard sb = Scoreboard.getInstance();
+        sb.renderScoreboard(game, height);
         character.render(game.batch);
         cp.renderCoinPath(game.batch);
 //        pb.render(game.batch);
@@ -85,16 +110,31 @@ public class GameScreen implements Screen {
 //        }
 
 
+        // update the optimal path, coin path, and range of motion
+        cp.updateCoinPath(character.charShape);
+        opt.updateOptimalPath(character.charShape);
+        opt.updateRangeOfMotion(character.getX());
         // update character position and attributes
         character.update();
         //Return to MainMenu Screen after a minute of game play
         if (((System.currentTimeMillis() - startTime)/1000) > 60){
             game.setScreen(new MainMenu(game));
         }
-        // update the coin path
-        cp.updateCoinPath(character.charShape);
-//        pb.update();
+        // pb.update();
         powerPath.update(character);
+
+        // move the separator each 1s
+        if(TimeUtils.nanoTime() - lastTimeBg > 10000000){
+            // move the separator 50px
+            currentBgY += 1;
+            // set the current time to lastTimeBg
+            lastTimeBg = TimeUtils.nanoTime();
+        }
+
+// if the seprator reaches the screen edge, move it back to the first position
+        if(currentBgY > height){
+            currentBgY = 0;
+        }
     }
 
     @Override
