@@ -22,6 +22,7 @@ public class MainMenu implements Screen {
     private TextButton quitButton;
     private Table buttonTable;
     private Stage stage;
+    private Texture background;
 
     OrthographicCamera camera;
 
@@ -31,6 +32,8 @@ public class MainMenu implements Screen {
         camera.setToOrtho(false, 800, 1280);
         //initializes menu screen items
         initialize();
+        background = new Texture(Gdx.files.internal("menuBG.png"));
+
 
     }
 
@@ -96,15 +99,18 @@ public class MainMenu implements Screen {
         Gdx.gl.glClearColor(0, 0, 0.2f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+
+        game.batch.begin();
+        game.batch.draw(background, 0, 0);
+
+        /*game.font.draw(game.batch,"Welcome to Irish Frenzy!!! ",100,150);
+        game.font.draw(game.batch,"Tap anywhere to begin!",100,100);*/
+        game.batch.end();
         //draw all items in buttonTable
+
         stage.act(Gdx.graphics.getDeltaTime());
         stage.draw();
         stage.setDebugAll(true);
-
-        /*game.batch.begin();
-        /*game.font.draw(game.batch,"Welcome to Irish Frenzy!!! ",100,150);
-        game.font.draw(game.batch,"Tap anywhere to begin!",100,100);*/
-        /*game.batch.end();*/
 
             /*if(Gdx.input.isTouched())
 
