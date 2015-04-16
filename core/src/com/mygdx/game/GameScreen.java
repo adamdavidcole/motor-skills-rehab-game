@@ -1,7 +1,6 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
@@ -26,6 +25,9 @@ public class GameScreen implements Screen {
     private Texture background;
     private float currentBgY;
     private long lastTimeBg;
+    private Long startTime;
+
+
 
 
     public GameScreen(final MyGdxGame gam) {
@@ -53,6 +55,9 @@ public class GameScreen implements Screen {
 
         //create the background
 //        background = new Background(width, height);
+        //note time when application starts
+        startTime = System.currentTimeMillis();
+
 //        pb = new PoisonBottle();
         background = new Texture(Gdx.files.internal("cloudBGSmall.png"));
 // the separator first appear at the position 800 (the edge of the screen, see
@@ -99,6 +104,10 @@ public class GameScreen implements Screen {
 
         // update character position and attributes
         character.update();
+        //Return to MainMenu Screen after a minute of game play
+        if (((System.currentTimeMillis() - startTime)/1000) > 60){
+            game.setScreen(new MainMenu(game));
+        }
         // update the coin path
         cp.updateCoinPath(character.charShape);
 //        pb.update();

@@ -1,11 +1,9 @@
 package com.mygdx.game;
 
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.TimeUtils;
 
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -25,7 +23,7 @@ public class PowerContainer {
             Power p = iter.next();
             p.update();
             if (TimeUtils.millis() - p.getTimeSpawned() > 30000) {
-                System.out.println("REMOVED POWER");
+                //System.out.println("REMOVED POWER");
                 iter.remove();
             }
         }
@@ -34,7 +32,7 @@ public class PowerContainer {
     public boolean isPoisoned() {
         System.out.println(powers.size());
         for (Power p : powers) {
-            System.out.println("we have a power?");
+            //System.out.println("we have a power?");
             return true;
             //if (p instanceof PoisonBottle) return true;
         }
@@ -43,6 +41,6 @@ public class PowerContainer {
 
     public void addPower(Power p) {
         powers.add(p);
-        System.out.println("power collected " + powers.size());
+        //System.out.println("power collected " + powers.size());
     }
 }
