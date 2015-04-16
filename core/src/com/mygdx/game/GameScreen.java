@@ -99,7 +99,6 @@ public class GameScreen implements Screen {
         game.batch.draw(background, 0, currentBgY - height);
         game.batch.draw(background, 0, currentBgY);
 
-        game.font.draw(game.batch, "Coins Collected: " + "IMPLEMENT SCOREBOARD", 0, height);
         Scoreboard sb = Scoreboard.getInstance();
         sb.renderScoreboard(game, height);
         character.render(game.batch);
