@@ -16,8 +16,8 @@ import java.util.Iterator;
  */
 public class CoinPath {
     private Array<Rectangle> coins;
-    private long lastCoinTime;
-    private double SPAWN_INTERVAL = 500000000.;
+    private double lastCoinTime;
+    private final double SPAWN_INTERVAL = 500000000.;
 
     // media files associated with a coin
     private Texture coinImage;
@@ -45,14 +45,14 @@ public class CoinPath {
     }
 
     public void updateCoinPath(Rectangle character) {
-        if (TimeUtils.nanoTime() - lastCoinTime > SPAWN_INTERVAL) {
+        if ((double)TimeUtils.nanoTime() - lastCoinTime > SPAWN_INTERVAL) {
             spawnCoin();
         }
         // move the coins, remove any that hit the character or are above the edge of the screen
         Iterator<Rectangle> iter = coins.iterator();
         while (iter.hasNext()) {
             Rectangle coin = iter.next();
-            coin.y += 200 * Gdx.graphics.getDeltaTime();
+            coin.y += GameScreen.SCROLL_VELOCITY * Gdx.graphics.getDeltaTime();
             if (coin.y > height)
                 iter.remove();
             if (coin.overlaps(character)) {
@@ -71,7 +71,7 @@ public class CoinPath {
         coin.width = 64;
         coin.height = 64;
         coins.add(coin);
-        lastCoinTime = TimeUtils.nanoTime();
+        lastCoinTime = (double) TimeUtils.nanoTime();
     }
 
     public void renderCoinPath(SpriteBatch batch) {

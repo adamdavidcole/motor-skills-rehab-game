@@ -19,7 +19,10 @@ public class GameScreen implements Screen {
     private Rectangle character;
     private final int height = 1280;
     private final int width = 800;
+    private OptimalPath opt;
     private CoinPath cp;
+
+    public static int SCROLL_VELOCITY = 200;
 
 
     public GameScreen(final MyGdxGame gam) {
@@ -44,7 +47,7 @@ public class GameScreen implements Screen {
         character.height = 64;
 
         // create the optimal path
-        OptimalPath opt = new OptimalPath(width, height);
+        opt = new OptimalPath(width, height);
 
         // create the coin path
         cp = new CoinPath(width, height, opt);
@@ -92,8 +95,10 @@ public class GameScreen implements Screen {
         if (character.x > width - 64)
             character.x = width - 64;
 
-        // update the coin path
+        // update the optimal path, coin path, and range of motion
         cp.updateCoinPath(character);
+        opt.updateOptimalPath(character);
+        opt.updateRangeOfMotion(character.x);
     }
 
     @Override
