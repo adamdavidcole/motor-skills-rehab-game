@@ -23,15 +23,16 @@ public class Character {
 
 
     public Character(int sW, int sH) {
-        characterImage = new Texture(Gdx.files.internal("bucket.png"));
+        characterImage = new Texture(Gdx.files.internal("charactar-02.png"));
         charShape = new Rectangle();
 
         // create a Rectangle to logically represent the charShape
         charShape = new Rectangle();
-        charShape.width = (int)(characterImage.getWidth() * 1);
-        charShape.height = (int)(characterImage.getHeight() * 1);
+        System.out.println("height: " + characterImage.getHeight() + ", " + characterImage.getWidth());
+        charShape.width = (int)(characterImage.getWidth() *.42);
+        charShape.height = (int)(characterImage.getHeight()*.42);
         charShape.x = sH / 2 - charShape.width / 2; // center the charShape horizontally
-        charShape.y = sH - charShape.height - 150; // bottom left corner of the charShape is 20 pixels above the bottom screen edge
+        charShape.y = sH - charShape.height - 50; // bottom left corner of the charShape is 20 pixels above the bottom screen edge
 
         powers = new PowerContainer(screenWidth, screenHeight);
 

@@ -63,17 +63,17 @@ public class CoinPath {
 
     private void spawnCoin() {
         Rectangle coin = new Rectangle();
-        coin.x = MathUtils.random(0, width - 64);
+        coin.x = MathUtils.random(0, width - 55);
         coin.y = 0;
-        coin.width = 64;
-        coin.height = 64;
+        coin.width = 55;
+        coin.height = 55;
         coins.add(coin);
         lastCoinTime = TimeUtils.nanoTime();
     }
 
     public void renderCoinPath(SpriteBatch batch) {
         for (Rectangle c : coins) {
-            batch.draw(coinImage, c.x, c.y);
+            batch.draw(coinImage, c.x, c.y, c.width, c.height);
         }
     }
 
