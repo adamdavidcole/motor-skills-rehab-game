@@ -1,7 +1,6 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
@@ -20,6 +19,8 @@ public class GameScreen implements Screen {
     private CoinPath cp;
 //    private PoisonBottle pb;
     private PowerPath powerPath;
+    private Long startTime;
+
 
 
 
@@ -45,6 +46,9 @@ public class GameScreen implements Screen {
 
         // create the power path
         powerPath = new PowerPath(width, height);
+
+        //note time when application starts
+        startTime = System.currentTimeMillis();
 
 //        pb = new PoisonBottle();
     }
@@ -83,6 +87,10 @@ public class GameScreen implements Screen {
 
         // update character position and attributes
         character.update();
+        //Return to MainMenu Screen after a minute of game play
+        if (((System.currentTimeMillis() - startTime)/1000) > 60){
+            game.setScreen(new MainMenu(game));
+        }
         // update the coin path
         cp.updateCoinPath(character.charShape);
 //        pb.update();
