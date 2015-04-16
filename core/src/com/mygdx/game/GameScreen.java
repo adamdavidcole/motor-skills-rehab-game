@@ -14,6 +14,7 @@ public class GameScreen implements Screen {
 //    private Texture characterImage;
     private Music rainMusic;
     private OrthographicCamera camera;
+    private OptimalPath opt;
     //private Rectangle charShape;
     private int height = 1280;
     private int width = 800;
@@ -28,6 +29,8 @@ public class GameScreen implements Screen {
     private Long startTime;
 
 
+
+    public static int SCROLL_VELOCITY = 200;
 
 
     public GameScreen(final MyGdxGame gam) {
@@ -47,8 +50,11 @@ public class GameScreen implements Screen {
         // create a Rectangle to logically represent the charShape
         character = new Character(width, height);
 
+        // create the optimal path
+        opt = new OptimalPath(width, height);
+
         // create the coin path
-        cp = new CoinPath(width, height);
+        cp = new CoinPath(width, height, opt);
 
         // create the power path
         powerPath = new PowerPath(width, height);
@@ -83,12 +89,14 @@ public class GameScreen implements Screen {
         // coordinate system specified by the camera.
         game.batch.setProjectionMatrix(camera.combined);
 
-        // begin a new batch and draw the charShape and all coins
+        // begin a new batch and draw the charShape and all coins, and scoreboard
         game.batch.begin();
         game.batch.draw(background, 0, currentBgY - height);
         game.batch.draw(background, 0, currentBgY);
 
         game.font.draw(game.batch, "Coins Collected: " + "IMPLEMENT SCOREBOARD", 0, height);
+        Scoreboard sb = Scoreboard.getInstance();
+        sb.renderScoreboard(game, height);
         character.render(game.batch);
         cp.renderCoinPath(game.batch);
 //        pb.render(game.batch);
@@ -102,15 +110,17 @@ public class GameScreen implements Screen {
 //        }
 
 
+        // update the optimal path, coin path, and range of motion
+        cp.updateCoinPath(character.charShape);
+        opt.updateOptimalPath(character.charShape);
+        opt.updateRangeOfMotion(character.getX());
         // update character position and attributes
         character.update();
         //Return to MainMenu Screen after a minute of game play
         if (((System.currentTimeMillis() - startTime)/1000) > 60){
             game.setScreen(new MainMenu(game));
         }
-        // update the coin path
-        cp.updateCoinPath(character.charShape);
-//        pb.update();
+        // pb.update();
         powerPath.update(character);
 
         // move the separator each 1s
