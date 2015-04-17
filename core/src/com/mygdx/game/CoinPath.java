@@ -14,6 +14,7 @@ import java.util.Iterator;
 /*
  * Created by William Schiela on 4/14/15
  */
+// a class to handle the spawning of coins and all other coin-related functionality
 public class CoinPath {
     private Array<Rectangle> coins;
     private double lastCoinTime;
@@ -30,8 +31,6 @@ public class CoinPath {
     // optimal path on which coins appear
     OptimalPath opt;
 
-    private Sound dropSound;
-
     public CoinPath(int width, int height, OptimalPath opt) {
         this.width = width;
         this.height = height;
@@ -41,13 +40,15 @@ public class CoinPath {
 
         this.opt = opt;
 
-        dropSound = Gdx.audio.newSound(Gdx.files.internal("coinCollectSound2.wav"));
+        coinSound = Gdx.audio.newSound(Gdx.files.internal("coinCollectSound2.wav"));
 
         // spawn the first coin
         spawnCoin();
 
     }
 
+    // moves the coins up on the screen and spawns a coin every SPAWN_INTERVAL
+    // checks for coins collected by the character and removes them, adding the points to the scoreboard
     public void updateCoinPath(Rectangle charShape) {
         if ((double)TimeUtils.nanoTime() - lastCoinTime > SPAWN_INTERVAL) {
             spawnCoin();
@@ -62,13 +63,14 @@ public class CoinPath {
             if (coin.overlaps(charShape)) {
                 Scoreboard sb = Scoreboard.getInstance();
                 sb.addCoin();
-                dropSound.play();
+                coinSound.play();
                 //coinSound.play();
                 iter.remove();
             }
         }
     }
 
+    // spawns a coin along the optimal path
     private void spawnCoin() {
         Rectangle coin = new Rectangle();
         coin.x = opt.computeOptimalPath();
@@ -79,15 +81,17 @@ public class CoinPath {
         lastCoinTime = (double) TimeUtils.nanoTime();
     }
 
+    // draws the coin path on the screen
     public void renderCoinPath(SpriteBatch batch) {
         for (Rectangle c : coins) {
             batch.draw(coinImage, c.x, c.y, c.width, c.height);
         }
     }
 
+    // releases all resources associated with the coins.
     public void tearDown() {
         coinImage.dispose();
-        // coinSound.dispose();
+        coinSound.dispose();
     }
 
 }

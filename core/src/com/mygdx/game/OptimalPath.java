@@ -13,7 +13,9 @@ import java.util.Iterator;
  * Created by William Schiela on 4/15/2015.
  */
 
-// tracks research data such as distance from the optimal path and users maximum range of motion
+// a class to represent the optimal path along which coins spawn
+// the optimal path is a sinusoid centered on the screen with a randomly varying amplitude every
+// half-period
 public class OptimalPath {
     // width and height of the screen on which the path exists
     private int width;
@@ -52,10 +54,12 @@ public class OptimalPath {
         spawnRefPoint();
     }
 
+    // computes a new random amplitude
     private int randomAmplitude() {
         return MathUtils.random(0, (width - 64) / 2);
     }
 
+    // computes the optimal path centered on the screen and randomizes the amplitude every half-period
     public float computeOptimalPath() {
         double t = (double) TimeUtils.nanoTime() - t0;
         // randomize amplitude every half-period
@@ -74,6 +78,10 @@ public class OptimalPath {
         return xPosition;
     }
 
+    // moves reference points up on the screen as the screen scrolls
+    // when a reference point reaches the height of the character, writes the optimal path position
+    // and the actual position of the character to a .CSV file
+    // TODO: graphics sizes changed, compute actual vs. optimal based on image centers
     public void updateOptimalPath(Rectangle charShape) {
         if (TimeUtils.nanoTime() - lastRefPointTime > SAMPLE_INTERVAL) {
             spawnRefPoint();
@@ -92,6 +100,8 @@ public class OptimalPath {
         }
     }
 
+    // spawns a point on the optimal path (calculated at the bottom of the screen) to use as a
+    // reference for when it reaches the character's height on the screen
     private void spawnRefPoint() {
         Point rp = new Point();
         rp.x = (int) computeOptimalPath();
@@ -101,6 +111,7 @@ public class OptimalPath {
 
     }
 
+    // updates the current range of motion of the player if necessary
     public void updateRangeOfMotion(int xPos) {
         if (xPos < minXRange) {
             minXRange = xPos;
@@ -109,8 +120,9 @@ public class OptimalPath {
         }
     }
 
+    // writes the optimal and actual positions of the character as reference points pass the character
     private void writeToCSV(float optimal, float actual) {
-        // TODO: implement
+        // TODO: implement timestamp, user information, game difficulty settings at top of CSV
         System.out.println(optimal + "\t" + actual);
     }
 
