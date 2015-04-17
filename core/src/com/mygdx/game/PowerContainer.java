@@ -7,21 +7,26 @@ import java.util.Iterator;
 import java.util.Set;
 
 /**
- * Created by acole9 on 4/15/15.
+ *C This class holds the "powers" of the character.
+ * It is dependent on the "character" class for functionality"
  */
 public class PowerContainer {
     private Set<Power> powers;
 
 
+    // constructor of power container
     public PowerContainer(int sW, int sH) {
         powers = new HashSet<Power>();
     }
 
+
+    // update position of "powers"
     public void update() {
         Iterator<Power> iter = powers.iterator();
         while (iter.hasNext()) {
             Power p = iter.next();
             p.update();
+            // disable power after specified amount
             if (TimeUtils.millis() - p.getTimeSpawned() > 15000) {
                 //System.out.println("REMOVED POWER");
                 iter.remove();
@@ -29,6 +34,7 @@ public class PowerContainer {
         }
     }
 
+    // determine if is poisoned
     public boolean isPoisoned() {
         //System.out.println(powers.size());
         for (Power p : powers) {
@@ -39,8 +45,9 @@ public class PowerContainer {
         return false;
     }
 
+
+    // Add collected power to power container
     public void addPower(Power p) {
         powers.add(p);
-        //System.out.println("power collected " + powers.size());
     }
 }

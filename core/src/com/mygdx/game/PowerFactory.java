@@ -1,7 +1,7 @@
 package com.mygdx.game;
 
 /**
- * Created by acole9 on 4/15/15.
+ * Create powers in game (will become more relevant with more power ups)
  */
 public class PowerFactory {
     public static Power createPower() {

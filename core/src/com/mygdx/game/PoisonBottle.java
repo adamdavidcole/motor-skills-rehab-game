@@ -8,16 +8,19 @@ import com.badlogic.gdx.math.Shape2D;
 import com.badlogic.gdx.utils.TimeUtils;
 
 /**
- * Created by acole9 on 4/15/15.
+ * This function implements a power up/down. Specifically, this power down
+ * causes the character to move opposite to expected directions.
  */
 public class PoisonBottle implements Power {
-    Texture texture = new Texture(Gdx.files.internal("poisonbottle.png"));
-    Rectangle bottle;
-    int width;
-    int height;
+    Texture texture = new Texture(Gdx.files.internal("poisonbottle.png"));  // image of bottle
+    Rectangle bottle;           // physical representation of bottle
+    int width;                  // width of bottle
+    int height;                 // height of bottle
     boolean draw;
-    long timeSpawned;
+    long timeSpawned;           // last time spawned
 
+
+    // Constructor that sets initial position, width, height and posititon of power up/down
     public PoisonBottle() {
         width = (int)(texture.getWidth() * 0.1);
         height = (int)(texture.getHeight() * 0.1);

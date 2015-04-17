@@ -9,7 +9,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 /**
- * Created by acole9 on 4/15/15.
+ * Responsible for the power ups generation, display, and collection.
  */
 public class PowerPath {
     public Set<Power> powerPath;

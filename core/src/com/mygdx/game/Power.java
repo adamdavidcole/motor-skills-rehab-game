@@ -7,6 +7,12 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Shape2D;
 
 /**
+ * This interface defines a "power" up or down. The interface exposes a render
+ * function as well as functions to get the "power height, width, and position.
+ *
+ */
+
+/**
  * Created by acole9 on 4/15/15.
  */
 public interface Power {
