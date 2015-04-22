@@ -9,7 +9,7 @@ public class Scoreboard {
     private static Scoreboard instance;
     private int points;
     private int numCoins;
-    private int multiplier;
+    private float multiplier;
 
     private final int POINTS_PER_COIN = 10;
 
@@ -38,4 +38,8 @@ public class Scoreboard {
         game.font.draw(game.batch, "Points: " + points, 0, height-10);
 
     }
-}
+
+    public void setMultiplier(float mult) {
+        multiplier = mult;
+    }
+ }

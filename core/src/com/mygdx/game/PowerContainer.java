@@ -30,11 +30,12 @@ public class PowerContainer {
             if (TimeUtils.millis() - p.getTimeSpawned() > 15000) {
                 //System.out.println("REMOVED POWER");
                 iter.remove();
+                // TODO: DIVIDE BY SCOREBOARD MULTIPLIER BY POWER MULTIPLIER
             }
         }
     }
 
-    // determine if is poisoned
+    // determine if is character is poisoned
     public boolean isPoisoned() {
         //System.out.println(powers.size());
         for (Power p : powers) {
@@ -49,5 +50,6 @@ public class PowerContainer {
     // Add collected power to power container
     public void addPower(Power p) {
         powers.add(p);
+        // TODO: MULTIPLY CURRENT SCOREBOARD MULTIPLIER BY POWER MULTIPLIER
     }
 }

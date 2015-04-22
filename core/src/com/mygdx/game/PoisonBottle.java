@@ -18,6 +18,7 @@ public class PoisonBottle implements Power {
     int height;                 // height of bottle
     boolean draw;
     long timeSpawned;           // last time spawned
+    float multiplier;
 
 
     // Constructor that sets initial position, width, height and posititon of power up/down
@@ -31,6 +32,7 @@ public class PoisonBottle implements Power {
         bottle.height = height;
         draw = true;
         timeSpawned = TimeUtils.millis();
+        multiplier = 0.5f;
     }
 
 
@@ -92,5 +94,9 @@ public class PoisonBottle implements Power {
     @Override
     public void setTimeCollected() {
         timeSpawned = TimeUtils.millis();
+    }
+
+    public float getMultiplier() {
+        return multiplier;
     }
 }

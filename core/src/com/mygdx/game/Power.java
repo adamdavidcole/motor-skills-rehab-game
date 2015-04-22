@@ -28,4 +28,5 @@ public interface Power {
     long getTimeSpawned();
     void setTimeCollected();
     void dispose();
+    float getMultiplier();
 }

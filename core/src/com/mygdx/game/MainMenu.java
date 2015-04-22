@@ -53,6 +53,7 @@ public class MainMenu implements Screen {
 
         //create button style
         buttonTexture = new Texture(Gdx.files.internal("MainMenuButton.png"));
+       // buttonTexture.
         TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
         buttonStyle.font = game.font;
         buttonStyle.up = new TextureRegionDrawable(new TextureRegion(buttonTexture));
