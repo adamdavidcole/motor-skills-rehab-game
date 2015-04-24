@@ -122,7 +122,7 @@ public class OptimalPath {
 
     // writes the optimal and actual positions of the character as reference points pass the character
     private void writeToCSV(float optimal, float actual) {
-        // TODO: implement timestamp, user information, game difficulty settings at top of CSV
+        // TODO: implement timestamp, user information, game difficulty settings at top of CSV (create DataFile[Writer] singleton)
         System.out.println(optimal + "\t" + actual);
     }
 
