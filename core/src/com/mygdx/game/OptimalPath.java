@@ -18,8 +18,8 @@ import java.util.Iterator;
 // half-period
 public class OptimalPath {
     // width and height of the screen on which the path exists
-    private int width;
-    private int height;
+    private int screenWidth;
+    private int screenHeight;
 
     // sinusoidal path paramters
     private final double PI = Math.PI;
@@ -36,9 +36,9 @@ public class OptimalPath {
     private int maxXRange;
     private int minXRange;
 
-    public OptimalPath(int width, int height) {
-        this.width = width;
-        this.height = height;
+    public OptimalPath(int sW, int sH) {
+        screenWidth = sW;
+        screenHeight = sH;
 
         refPoints = new Array<Point>();
 
@@ -47,8 +47,8 @@ public class OptimalPath {
         t0 = (double) TimeUtils.nanoTime();
         inSecondHalfPeriod = false;
 
-        maxXRange = (width - 64) / 2;
-        minXRange = (width - 64) / 2;
+        maxXRange = sW / 2;
+        minXRange = sW / 2;
 
         // spawn the first reference point
         spawnRefPoint();
@@ -56,7 +56,7 @@ public class OptimalPath {
 
     // computes a new random amplitude
     private int randomAmplitude() {
-        return MathUtils.random(0, (width - 64) / 2);
+        return MathUtils.random(0, (screenWidth - CoinPath.COIN_WIDTH) / 2);
     }
 
     // computes the optimal path centered on the screen and randomizes the amplitude every half-period
@@ -71,7 +71,7 @@ public class OptimalPath {
             amplitude = randomAmplitude();
             t0 = (double) TimeUtils.nanoTime();
         }
-        double offset = (width - 64) / 2;
+        double offset = screenWidth / 2;
         double argument = 2*PI*t/period;
 
         float xPosition = (float) (offset + amplitude*Math.sin(argument));
@@ -81,7 +81,6 @@ public class OptimalPath {
     // moves reference points up on the screen as the screen scrolls
     // when a reference point reaches the height of the character, writes the optimal path position
     // and the actual position of the character to a .CSV file
-    // TODO: graphics sizes changed, compute actual vs. optimal based on image centers
     public void updateOptimalPath(Rectangle charShape) {
         if (TimeUtils.nanoTime() - lastRefPointTime > SAMPLE_INTERVAL) {
             spawnRefPoint();
@@ -91,10 +90,9 @@ public class OptimalPath {
         while (iter.hasNext()) {
             Point rp = iter.next();
             rp.y += GameScreen.SCROLL_VELOCITY * Gdx.graphics.getDeltaTime();
-            if (rp.y > height)
-                iter.remove();
             if (rp.y >= charShape.y) {
-                writeToCSV(rp.x, charShape.x);
+                float charMiddle = charShape.x + charShape.getWidth()/2;
+                writeToCSV(rp.x, charMiddle);
                 iter.remove();
             }
         }
@@ -105,7 +103,7 @@ public class OptimalPath {
     private void spawnRefPoint() {
         Point rp = new Point();
         rp.x = (int) computeOptimalPath();
-        rp.y = -64;
+        rp.y = 0;
         refPoints.add(rp);
         lastRefPointTime = (double)TimeUtils.nanoTime();
 

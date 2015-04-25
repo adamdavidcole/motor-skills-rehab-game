@@ -32,10 +32,10 @@ public class Character {
 
         // create a Rectangle to logically represent the charShape
         charShape = new Rectangle();
-        System.out.println("height: " + characterImage.getHeight() + ", " + characterImage.getWidth());
+        //System.out.println("height: " + characterImage.getHeight() + ", " + characterImage.getWidth());
         charShape.width = (int)(characterImage.getWidth() *.42);
         charShape.height = (int)(characterImage.getHeight()*.42);
-        charShape.x = sH / 2 - charShape.width / 2; // center the charShape horizontally
+        charShape.x = sW / 2 - charShape.width / 2; // center the charShape horizontally
         charShape.y = sH - charShape.height - 50; // bottom left corner of the charShape is 20 pixels above the bottom screen edge
 
         powers = new PowerContainer(screenWidth, screenHeight);
@@ -47,7 +47,6 @@ public class Character {
     public void render(SpriteBatch batch) {
         if (powers.isPoisoned()) {
             batch.draw(characterImagePoisoned, charShape.x, charShape.y, charShape.width, charShape.height);
-            System.out.println("posion image");
         }
         else batch.draw(characterImage, charShape.x, charShape.y, charShape.width, charShape.height);
     }
