@@ -28,8 +28,7 @@ public class GameScreen implements Screen {
     private Long startTime;
     private Music gameMusic;
 
-
-
+    private DataFile dataFile;
 
     public static int SCROLL_VELOCITY = 200;
 
@@ -55,8 +54,11 @@ public class GameScreen implements Screen {
         // create a Rectangle to logically represent the charShape
         character = new Character(width, height);
 
+        // data file for exporting research data
+        dataFile = new DataFile("dFile2.csv");
+
         // create the optimal path
-        opt = new OptimalPath(width, height);
+        opt = new OptimalPath(width, height, dataFile);
 
         // create the coin path
         cp = new CoinPath(width, height, opt);
@@ -69,13 +71,14 @@ public class GameScreen implements Screen {
         //note time when application starts
         startTime = System.currentTimeMillis();
 
-//        pb = new PoisonBottle();
+//      pb = new PoisonBottle();
         background = new Texture(Gdx.files.internal("cloudBGSmall.png"));
 // the separator first appear at the position 800 (the edge of the screen, see
 // the camera above)
         currentBgY = height;
         // set lastTimeBg to current time
         lastTimeBg = TimeUtils.nanoTime();
+
     }
 
     @Override
@@ -122,6 +125,7 @@ public class GameScreen implements Screen {
         character.update();
         //Return to MainMenu Screen after a minute of game play
         if (((System.currentTimeMillis() - startTime)/1000) > 60){
+            dataFile.close();
             game.setScreen(new MainMenu(game));
         }
         // pb.update();

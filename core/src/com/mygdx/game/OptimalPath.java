@@ -36,7 +36,9 @@ public class OptimalPath {
     private int maxXRange;
     private int minXRange;
 
-    public OptimalPath(int sW, int sH) {
+    private DataFile dataFile;
+
+    public OptimalPath(int sW, int sH, DataFile df) {
         screenWidth = sW;
         screenHeight = sH;
 
@@ -52,6 +54,8 @@ public class OptimalPath {
 
         // spawn the first reference point
         spawnRefPoint();
+
+        dataFile = df;
     }
 
     // computes a new random amplitude
@@ -120,8 +124,7 @@ public class OptimalPath {
 
     // writes the optimal and actual positions of the character as reference points pass the character
     private void writeToCSV(float optimal, float actual) {
-        // TODO: implement timestamp, user information, game difficulty settings at top of CSV (create DataFile[Writer] singleton)
-        System.out.println(optimal + "\t" + actual);
+        dataFile.write(optimal, actual);
     }
 
 }
