@@ -58,10 +58,10 @@ public class GameScreen implements Screen {
         character = new Character(width, height);
 
         // data file for exporting research data
-        String userTag = LoginScreen.username.replace(" ", "_");
-        String timestamp = new Timestamp(System.currentTimeMillis()).toString().replace(" ","_");
-        String timestampFilename = timestamp.replace(":", "-");
-        dataFile = new DataFile(userTag + timestampFilename + ".csv");
+        String userTag = LoginScreen.username;
+        String timestamp = new Timestamp(System.currentTimeMillis()).toString();
+        String filename = (userTag + timestamp + ".csv").replace(":", "-").replace(" ","_");
+        dataFile = new DataFile(filename);
         dataFile.writeHeader(LoginScreen.username, timestamp);
 
         // create the optimal path

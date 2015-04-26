@@ -35,11 +35,14 @@ public class Scoreboard {
     // draws the scoreboard on the screen
     public void renderScoreboard(MyGdxGame game, int height) {
         game.font.draw(game.batch, "Coins Collected: " + numCoins, 0, height);
-        game.font.draw(game.batch, "Points: " + points, 0, height-10);
+        game.font.draw(game.batch, "Points: " + points, 0, height-15);
+        game.font.draw(game.batch, "Multiplier = X" + multiplier, 0, height - 30);
 
     }
 
     public void setMultiplier(float mult) {
         multiplier = mult;
     }
+
+    public float getMultiplier() { return multiplier; }
  }
