@@ -8,6 +8,8 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.TimeUtils;
 
+import java.sql.Timestamp;
+
 
 public class GameScreen implements Screen {
     final MyGdxGame game;
@@ -31,6 +33,7 @@ public class GameScreen implements Screen {
     private DataFile dataFile;
 
     public static int SCROLL_VELOCITY = 200;
+    public int GAME_TIMER = 60;
 
 
     public GameScreen(final MyGdxGame gam) {
@@ -41,7 +44,7 @@ public class GameScreen implements Screen {
         gameMusic.play();
 
         // load the image for the irishman, 64x64 pixels
-//        characterImage = new Texture(Gdx.files.internal("bucket.png"));
+        // characterImage = new Texture(Gdx.files.internal("bucket.png"));
 
         // load the rain background "music"
         //rainMusic = Gdx.audio.newMusic(Gdx.files.internal("rain.mp3"));
@@ -55,7 +58,11 @@ public class GameScreen implements Screen {
         character = new Character(width, height);
 
         // data file for exporting research data
-        dataFile = new DataFile("dFile2.csv");
+        String userTag = LoginScreen.username.replace(" ", "_");
+        String timestamp = new Timestamp(System.currentTimeMillis()).toString().replace(" ","_");
+        String timestampFilename = timestamp.replace(":", "-");
+        dataFile = new DataFile(userTag + timestampFilename + ".csv");
+        dataFile.writeHeader(LoginScreen.username, timestamp);
 
         // create the optimal path
         opt = new OptimalPath(width, height, dataFile);
@@ -124,7 +131,7 @@ public class GameScreen implements Screen {
         // update character position and attributes
         character.update();
         //Return to MainMenu Screen after a minute of game play
-        if (((System.currentTimeMillis() - startTime)/1000) > 60){
+        if (((System.currentTimeMillis() - startTime)/1000) > GAME_TIMER){
             dataFile.close();
             game.setScreen(new MainMenu(game));
         }
