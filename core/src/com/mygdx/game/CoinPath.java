@@ -95,5 +95,4 @@ public class CoinPath {
         coinImage.dispose();
         coinSound.dispose();
     }
-
 }
