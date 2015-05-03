@@ -5,11 +5,12 @@ package com.mygdx.game;
  */
 public class PowerFactory {
     public static Power createPower() {
-        // TODO: when new powers are added, have factory create random power
-        /*  double rand = Math.random();
-          if (rand >= 0) {
+        double rand = Math.random();
+        if (rand <= 0.5) {
             return new PoisonBottle();
-        }*/
-        return new PoisonBottle();
+        }
+        else {
+            return new Times2Multiplier();
+        }
     }
 }

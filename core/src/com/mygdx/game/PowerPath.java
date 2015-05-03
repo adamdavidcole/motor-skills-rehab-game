@@ -22,7 +22,7 @@ public class PowerPath {
         lastPowerSpawn = TimeUtils.millis();
         screenWidth = sW;
         screenHeight = sH;
-    };
+    }
 
     public void update(Character character) {
         // determine if enough time has passed since last power spawn
