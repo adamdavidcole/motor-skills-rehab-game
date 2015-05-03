@@ -10,6 +10,7 @@ public class DesktopLauncher {
         config.title = "Irish Frenzy";
         config.width = 800;
         config.height = 1280;
+        config.resizable = false;
 		new LwjglApplication(new MyGdxGame(), config);
 	}
 }

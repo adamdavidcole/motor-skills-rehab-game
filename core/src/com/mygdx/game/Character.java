@@ -24,7 +24,7 @@ public class Character {
 
 
     public Character(int sW, int sH) {
-        characterImage = new Texture(Gdx.files.internal("charactar-02.png"));
+        characterImage = new Texture(Gdx.files.internal("charactar4-01.png"));
         characterImagePoisoned = new Texture(Gdx.files.internal("charactar-02-poisoned.png"));
 
 
@@ -33,8 +33,8 @@ public class Character {
         // create a Rectangle to logically represent the charShape
         charShape = new Rectangle();
         //System.out.println("height: " + characterImage.getHeight() + ", " + characterImage.getWidth());
-        charShape.width = (int)(characterImage.getWidth() *.42);
-        charShape.height = (int)(characterImage.getHeight()*.42);
+        charShape.width = (int)(characterImage.getWidth());
+        charShape.height = (int)(characterImage.getHeight());
         charShape.x = sW / 2 - charShape.width / 2; // center the charShape horizontally
         charShape.y = sH - charShape.height - 50; // bottom left corner of the charShape is 20 pixels above the bottom screen edge
 

@@ -16,11 +16,11 @@ import java.util.Iterator;
  */
 // a class to handle the spawning of coins and all other coin-related functionality
 public class CoinPath {
-    public static final int COIN_WIDTH = 64;
-    public static final int COIN_HEIGHT = 64;
+    public static final int COIN_WIDTH = 40;
+    public static final int COIN_HEIGHT = 40;
     private Array<Rectangle> coins;
     private double lastCoinTime;
-    private final double SPAWN_INTERVAL = 500000000.;
+    private final double SPAWN_INTERVAL = 300000000.;
 
     // media files associated with a coin
     private Texture coinImage;
@@ -37,7 +37,7 @@ public class CoinPath {
         this.screenWidth = sW;
         this.screenHeight = sH;
         coins = new Array<Rectangle>();
-        coinImage = new Texture(Gdx.files.internal("coin.png"));
+        coinImage = new Texture(Gdx.files.internal("coinSmall.png"));
         //coinSound = Gdx.audio.newSound(Gdx.files.internal("coin.wav"));
 
         this.opt = opt;
