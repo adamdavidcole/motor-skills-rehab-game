@@ -82,8 +82,6 @@ public class MainMenu implements Screen {
         quitButton.addListener(new ChangeListener() {
             @Override
             public void changed (ChangeEvent event, Actor actor) {
-                // close the data file
-
                 //System.out.println("CLICKED");
                 //quit the app
                 Gdx.app.exit();
