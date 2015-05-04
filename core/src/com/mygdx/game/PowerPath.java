@@ -9,7 +9,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 /**
- * Created by acole9 on 4/15/15.
+ * Responsible for the power ups generation, display, and collection.
  */
 public class PowerPath {
     public Set<Power> powerPath;
@@ -22,7 +22,7 @@ public class PowerPath {
         lastPowerSpawn = TimeUtils.millis();
         screenWidth = sW;
         screenHeight = sH;
-    };
+    }
 
     public void update(Character character) {
         // determine if enough time has passed since last power spawn

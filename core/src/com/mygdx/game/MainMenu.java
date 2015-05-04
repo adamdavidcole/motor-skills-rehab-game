@@ -53,6 +53,7 @@ public class MainMenu implements Screen {
 
         //create button style
         buttonTexture = new Texture(Gdx.files.internal("MainMenuButton.png"));
+       // buttonTexture.
         TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
         buttonStyle.font = game.font;
         buttonStyle.up = new TextureRegionDrawable(new TextureRegion(buttonTexture));
@@ -71,6 +72,7 @@ public class MainMenu implements Screen {
             @Override
             public void changed (ChangeEvent event, Actor actor) {
                  System.out.println("CLICKED");
+
                 //move to gameplay screen
                 game.setScreen(new GameScreen(game));
             }
@@ -81,7 +83,7 @@ public class MainMenu implements Screen {
         quitButton.addListener(new ChangeListener() {
             @Override
             public void changed (ChangeEvent event, Actor actor) {
-                System.out.println("CLICKED");
+                //System.out.println("CLICKED");
                 //quit the app
                 Gdx.app.exit();
             }

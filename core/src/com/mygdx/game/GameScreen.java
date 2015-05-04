@@ -8,6 +8,8 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.TimeUtils;
 
+import java.sql.Timestamp;
+
 
 public class GameScreen implements Screen {
     final MyGdxGame game;
@@ -28,10 +30,10 @@ public class GameScreen implements Screen {
     private Long startTime;
     private Music gameMusic;
 
-
-
+    private DataFile dataFile;
 
     public static int SCROLL_VELOCITY = 200;
+    public int GAME_TIMER = 60;
 
 
     public GameScreen(final MyGdxGame gam) {
@@ -42,7 +44,7 @@ public class GameScreen implements Screen {
         gameMusic.play();
 
         // load the image for the irishman, 64x64 pixels
-//        characterImage = new Texture(Gdx.files.internal("bucket.png"));
+        // characterImage = new Texture(Gdx.files.internal("bucket.png"));
 
         // load the rain background "music"
         //rainMusic = Gdx.audio.newMusic(Gdx.files.internal("rain.mp3"));
@@ -55,8 +57,15 @@ public class GameScreen implements Screen {
         // create a Rectangle to logically represent the charShape
         character = new Character(width, height);
 
+        // data file for exporting research data
+        String userTag = LoginScreen.username;
+        String timestamp = new Timestamp(System.currentTimeMillis()).toString();
+        String filename = (userTag + timestamp + ".csv").replace(":", "-").replace(" ","_");
+        dataFile = new DataFile(filename);
+        dataFile.writeHeader(LoginScreen.username, timestamp);
+
         // create the optimal path
-        opt = new OptimalPath(width, height);
+        opt = new OptimalPath(width, height, dataFile);
 
         // create the coin path
         cp = new CoinPath(width, height, opt);
@@ -69,13 +78,14 @@ public class GameScreen implements Screen {
         //note time when application starts
         startTime = System.currentTimeMillis();
 
-//        pb = new PoisonBottle();
+//      pb = new PoisonBottle();
         background = new Texture(Gdx.files.internal("cloudBGSmall.png"));
 // the separator first appear at the position 800 (the edge of the screen, see
 // the camera above)
         currentBgY = height;
         // set lastTimeBg to current time
         lastTimeBg = TimeUtils.nanoTime();
+
     }
 
     @Override
@@ -99,7 +109,6 @@ public class GameScreen implements Screen {
         game.batch.draw(background, 0, currentBgY - height);
         game.batch.draw(background, 0, currentBgY);
 
-        game.font.draw(game.batch, "Coins Collected: " + "IMPLEMENT SCOREBOARD", 0, height);
         Scoreboard sb = Scoreboard.getInstance();
         sb.renderScoreboard(game, height);
         character.render(game.batch);
@@ -122,7 +131,8 @@ public class GameScreen implements Screen {
         // update character position and attributes
         character.update();
         //Return to MainMenu Screen after a minute of game play
-        if (((System.currentTimeMillis() - startTime)/1000) > 60){
+        if (((System.currentTimeMillis() - startTime)/1000) > GAME_TIMER){
+            dataFile.close();
             game.setScreen(new MainMenu(game));
         }
         // pb.update();

@@ -13,11 +13,13 @@ import java.util.Iterator;
  * Created by William Schiela on 4/15/2015.
  */
 
-// tracks research data such as distance from the optimal path and users maximum range of motion
+// a class to represent the optimal path along which coins spawn
+// the optimal path is a sinusoid centered on the screen with a randomly varying amplitude every
+// half-period
 public class OptimalPath {
     // width and height of the screen on which the path exists
-    private int width;
-    private int height;
+    private int screenWidth;
+    private int screenHeight;
 
     // sinusoidal path paramters
     private final double PI = Math.PI;
@@ -34,9 +36,11 @@ public class OptimalPath {
     private int maxXRange;
     private int minXRange;
 
-    public OptimalPath(int width, int height) {
-        this.width = width;
-        this.height = height;
+    private DataFile dataFile;
+
+    public OptimalPath(int sW, int sH, DataFile df) {
+        screenWidth = sW;
+        screenHeight = sH;
 
         refPoints = new Array<Point>();
 
@@ -45,17 +49,21 @@ public class OptimalPath {
         t0 = (double) TimeUtils.nanoTime();
         inSecondHalfPeriod = false;
 
-        maxXRange = (width - 64) / 2;
-        minXRange = (width - 64) / 2;
+        maxXRange = sW / 2;
+        minXRange = sW / 2;
 
         // spawn the first reference point
         spawnRefPoint();
+
+        dataFile = df;
     }
 
+    // computes a new random amplitude
     private int randomAmplitude() {
-        return MathUtils.random(0, (width - 64) / 2);
+        return MathUtils.random(0, (screenWidth - CoinPath.COIN_WIDTH) / 2);
     }
 
+    // computes the optimal path centered on the screen and randomizes the amplitude every half-period
     public float computeOptimalPath() {
         double t = (double) TimeUtils.nanoTime() - t0;
         // randomize amplitude every half-period
@@ -67,13 +75,16 @@ public class OptimalPath {
             amplitude = randomAmplitude();
             t0 = (double) TimeUtils.nanoTime();
         }
-        double offset = (width - 64) / 2;
+        double offset = screenWidth / 2;
         double argument = 2*PI*t/period;
 
         float xPosition = (float) (offset + amplitude*Math.sin(argument));
         return xPosition;
     }
 
+    // moves reference points up on the screen as the screen scrolls
+    // when a reference point reaches the height of the character, writes the optimal path position
+    // and the actual position of the character to a .CSV file
     public void updateOptimalPath(Rectangle charShape) {
         if (TimeUtils.nanoTime() - lastRefPointTime > SAMPLE_INTERVAL) {
             spawnRefPoint();
@@ -83,24 +94,26 @@ public class OptimalPath {
         while (iter.hasNext()) {
             Point rp = iter.next();
             rp.y += GameScreen.SCROLL_VELOCITY * Gdx.graphics.getDeltaTime();
-            if (rp.y > height)
-                iter.remove();
             if (rp.y >= charShape.y) {
-                writeToCSV(rp.x, charShape.x);
+                float charMiddle = charShape.x + charShape.getWidth()/2;
+                writeToCSV(rp.x, charMiddle);
                 iter.remove();
             }
         }
     }
 
+    // spawns a point on the optimal path (calculated at the bottom of the screen) to use as a
+    // reference for when it reaches the character's height on the screen
     private void spawnRefPoint() {
         Point rp = new Point();
         rp.x = (int) computeOptimalPath();
-        rp.y = -64;
+        rp.y = 0;
         refPoints.add(rp);
         lastRefPointTime = (double)TimeUtils.nanoTime();
 
     }
 
+    // updates the current range of motion of the player if necessary
     public void updateRangeOfMotion(int xPos) {
         if (xPos < minXRange) {
             minXRange = xPos;
@@ -109,9 +122,9 @@ public class OptimalPath {
         }
     }
 
+    // writes the optimal and actual positions of the character as reference points pass the character
     private void writeToCSV(float optimal, float actual) {
-        // TODO: implement
-        System.out.println(optimal + "\t" + actual);
+        dataFile.write(optimal, actual);
     }
 
 }
