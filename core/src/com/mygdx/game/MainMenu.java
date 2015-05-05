@@ -17,10 +17,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 public class MainMenu implements Screen {
 
     final MyGdxGame game;
-    private Texture buttonTexture;
-    private TextButton playButton;
-    private TextButton quitButton;
-    private Table buttonTable;
     private Stage stage;
     private Texture background;
 
@@ -33,8 +29,6 @@ public class MainMenu implements Screen {
         //initializes menu screen items
         initialize();
         background = new Texture(Gdx.files.internal("menuBG.png"));
-
-
     }
 
     public void initialize(){
@@ -46,38 +40,53 @@ public class MainMenu implements Screen {
         Gdx.input.setInputProcessor(stage);
 
 
-        //create button table to hold textbuttons: play and quit
-        buttonTable = new Table();
+        //create button table to hold textbuttons: play, settings and quit
+        Table buttonTable = new Table();
         buttonTable.setFillParent(true);
 
 
         //create button style
-        buttonTexture = new Texture(Gdx.files.internal("MainMenuButton.png"));
-       // buttonTexture.
+        Texture buttonTexture = new Texture(Gdx.files.internal("MainMenuButton.png"));
         TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
         buttonStyle.font = game.font;
         buttonStyle.up = new TextureRegionDrawable(new TextureRegion(buttonTexture));
 
         //create play button
-        playButton = new TextButton("PLAY", buttonStyle);
+        TextButton playButton = new TextButton("PLAY", buttonStyle);
         buttonTable.add(playButton);
         buttonTable.row();
+
+        //create settings button
+        TextButton settingsButton = new TextButton("SETTINGS", buttonStyle);
+        buttonTable.add(settingsButton);
+        buttonTable.row();
+
         //create quit button
-        quitButton = new TextButton("QUIT", buttonStyle);
+        TextButton quitButton = new TextButton("QUIT", buttonStyle);
         buttonTable.add(quitButton);
+
         stage.addActor(buttonTable);
 
         //add a listener for play button
         playButton.addListener(new ChangeListener() {
             @Override
             public void changed (ChangeEvent event, Actor actor) {
-                 System.out.println("CLICKED");
-
+                System.out.println("CLICKED");
                 //move to gameplay screen
                 game.setScreen(new GameScreen(game));
             }
         });
         playButton.setPosition(600,400);
+
+        //add a listener for settings button
+        settingsButton.addListener(new ChangeListener() {
+            @Override
+            public void changed (ChangeEvent event, Actor actor) {
+                //move to settings screen
+                game.setScreen(new SettingScreen(game));
+            }
+        });
+
 
         //add a listener for the quit button
         quitButton.addListener(new ChangeListener() {

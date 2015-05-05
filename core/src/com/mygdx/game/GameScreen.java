@@ -6,6 +6,7 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.TimeUtils;
 
 import java.sql.Timestamp;
@@ -34,11 +35,14 @@ public class GameScreen implements Screen {
 
     public static int SCROLL_VELOCITY = 200;
     public int GAME_TIMER = 60;
+    private Stage stage;
 
 
     public GameScreen(final MyGdxGame gam) {
         this.game = gam;
+        stage = new Stage();
 
+        Gdx.input.setInputProcessor(stage);
         gameMusic = Gdx.audio.newMusic(Gdx.files.internal("gameSong.mp3"));
         gameMusic.setLooping(true);
         gameMusic.play();
@@ -86,6 +90,8 @@ public class GameScreen implements Screen {
         // set lastTimeBg to current time
         lastTimeBg = TimeUtils.nanoTime();
 
+        
+
     }
 
     @Override
@@ -116,6 +122,10 @@ public class GameScreen implements Screen {
 //        pb.render(game.batch);
         powerPath.render(game.batch);
         game.batch.end();
+
+        stage.act(Gdx.graphics.getDeltaTime());
+        stage.draw();
+        stage.setDebugAll(true);
 
 //
 //        if (character.charShape.overlaps(pb.getRectangle())) {
