@@ -23,16 +23,13 @@ public class GameScreen implements Screen {
     //private Rectangle charShape;
     public static int SCROLL_VELOCITY = 100;
 
-//    private PoisonBottle pb;
-    private PowerPath powerPath;
 //    private Background background;
     private Texture background;
     private float currentBgY;
     private long lastTimeBg;
-    private Long startTime;
 
-    private Music gameMusic;
-
+    //private Music gameMusic;
+    private Soundtrack soundtrack;
     private Stage stage;
 
     private int height = 1280;
@@ -44,9 +41,10 @@ public class GameScreen implements Screen {
         stage = new Stage();
 
         Gdx.input.setInputProcessor(stage);
-        gameMusic = Gdx.audio.newMusic(Gdx.files.internal("gameSong.mp3"));
-        gameMusic.setLooping(true);
-        gameMusic.play();
+        soundtrack = new Soundtrack();
+        //gameMusic = Gdx.audio.newMusic(Gdx.files.internal("gameSong.mp3"));
+        //gameMusic.setLooping(false);
+
 
         // load the image for the irishman, 64x64 pixels
         // characterImage = new Texture(Gdx.files.internal("bucket.png"));
@@ -59,44 +57,15 @@ public class GameScreen implements Screen {
         camera = new OrthographicCamera(width, height);
         camera.setToOrtho(false, width, height);
 
-        //create the stage for buttons
-        stage = new Stage();
-        Gdx.input.setInputProcessor(stage);
 
-        //create button table to hold textbuttons: play, settings and quit
-        Table buttonTable = new Table();
-        buttonTable.setFillParent(true);
-
-        //create button style
-        Texture buttonTexture = new Texture(Gdx.files.internal("MainMenuButton.png"));
-        TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
-        buttonStyle.font = game.font;
-        buttonStyle.up = new TextureRegionDrawable(new TextureRegion(buttonTexture));
-
-        //create quit button
-        TextButton backButton = new TextButton("BACK", buttonStyle);
-        buttonTable.add(backButton);
-        stage.addActor(buttonTable);
-
-        //add a listener for the quit button
-        backButton.addListener(new ChangeListener() {
-            @Override
-            public void changed (ChangeEvent event, Actor actor) {
-                //back to main menu of the app
-                game.setScreen(new MainMenu(game));
-            }
-        });
-
-        // create a Rectangle to logically represent the charShape
+        // creates the button to go back to the main menu
+        generateBackButton();
 
 
-        // create the power path
-        powerPath = new PowerPath(width, height);
 
         //create the background
 //        background = new Background(width, height);
         //note time when application starts
-        startTime = System.currentTimeMillis();
 
 //      pb = new PoisonBottle();
         background = new Texture(Gdx.files.internal("cloudBGSmall.png"));
@@ -135,8 +104,7 @@ public class GameScreen implements Screen {
         sb.renderScoreboard(game, height);
         game.character.render(game.batch);
         game.cp.renderCoinPath(game.batch);
-//        pb.render(game.batch);
-        powerPath.render(game.batch);
+        game.powerPath.render(game.batch);
         game.batch.end();
 
         stage.act(Gdx.graphics.getDeltaTime());
@@ -157,7 +125,6 @@ public class GameScreen implements Screen {
 //            game.setScreen(new MainMenu(game));
 //        }
         // pb.update();
-        powerPath.update(game.character);
 
         // move the separator each 1s
         if(TimeUtils.nanoTime() - lastTimeBg > 10000000){
@@ -173,27 +140,41 @@ public class GameScreen implements Screen {
         }
     }
 
+
     @Override
     public void resize(int width, int height) {
     }
+
 
     @Override
     public void show() {
         // start the playback of the background music
         // when the screen is shown
         // rainMusic.play();
+        game.startGame();
+        game.startTime = System.currentTimeMillis();
+        soundtrack.gameMusic.play();
     }
 
     @Override
     public void hide() {
+        game.stopGame();
+        soundtrack.gameMusic.stop();
     }
 
     @Override
     public void pause() {
+//        game.stopGame();
+//        soundtrack.gameMusic.stop();
+
     }
 
     @Override
     public void resume() {
+        game.startGame();
+//        game.startTime = System.currentTimeMillis();
+//
+//        soundtrack.gameMusic.play();
     }
 
     @Override
@@ -201,6 +182,36 @@ public class GameScreen implements Screen {
         //characterImage.dispose();
         //rainMusic.dispose();
 //        cp.tearDown();
+    }
+
+    private void generateBackButton () {
+        //create the stage for buttons
+        stage = new Stage();
+        Gdx.input.setInputProcessor(stage);
+
+        //create button table to hold textbuttons: play, settings and quit
+        Table buttonTable = new Table();
+        buttonTable.setFillParent(true);
+
+        //create button style
+        Texture buttonTexture = new Texture(Gdx.files.internal("MainMenuButton.png"));
+        TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
+        buttonStyle.font = game.font;
+        buttonStyle.up = new TextureRegionDrawable(new TextureRegion(buttonTexture));
+
+        //create quit button
+        TextButton backButton = new TextButton("BACK", buttonStyle);
+        buttonTable.add(backButton);
+        stage.addActor(buttonTable);
+
+        //add a listener for the quit button
+        backButton.addListener(new ChangeListener() {
+            @Override
+            public void changed (ChangeEvent event, Actor actor) {
+                //back to main menu of the app
+                game.setScreen(new MainMenu(game));
+            }
+        });
     }
 
 }

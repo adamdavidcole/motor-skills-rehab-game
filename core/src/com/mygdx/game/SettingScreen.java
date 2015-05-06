@@ -100,6 +100,10 @@ public class SettingScreen implements Screen {
         diffSlider.addListener(new ChangeListener() {
             public void changed(ChangeEvent event, Actor actor) {
                 int value = (int)((Slider) actor).getValue();
+                Settings.getInstance().difficulty = value;
+                GameState.difficulty = value;
+                System.out.print("vale " + GameState.difficulty);
+                game.gameScrollSpeed = 100 * value;
                 updateDiffSliderLabel(value);
             }
         });
@@ -108,6 +112,8 @@ public class SettingScreen implements Screen {
         timeSlider.addListener(new ChangeListener() {
             public void changed(ChangeEvent event, Actor actor) {
                 int value = (int)((Slider) actor).getValue();
+                Settings.getInstance().gameDuration = value;
+
                 updateTimeSliderLabel(value);
             }
         });
@@ -116,6 +122,8 @@ public class SettingScreen implements Screen {
         rangeSlider.addListener(new ChangeListener() {
             public void changed(ChangeEvent event, Actor actor) {
                 int value = (int)((Slider) actor).getValue();
+                Settings.getInstance().rangeOfMotion = value;
+                System.out.println("Value: " + value + "; Settings updated: " + Settings.getInstance().rangeOfMotion);
                 updateRangeSliderLabel(value);
             }
         });

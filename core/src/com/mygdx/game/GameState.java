@@ -10,6 +10,7 @@ public class GameState extends com.badlogic.gdx.Game {
     public Character character;
     public OptimalPath opt;
     public CoinPath cp;
+    public PowerPath powerPath;
     private DataFile dataFile;
 
 
@@ -22,20 +23,26 @@ public class GameState extends com.badlogic.gdx.Game {
 
     public int scrollVelocity = 200;
     public int remainingTimeSecs = 60;
-    private Long startTime = System.currentTimeMillis();
 
+    public Long startTime = System.currentTimeMillis();
 
+    public boolean isRunning = false;
+    public static float gameScrollSpeed = 75 + 25 * Settings.getInstance().difficulty;
+    public static int difficulty = 1;
 
 
     @Override
     public void create() {
-        instantiateDataFile(); // instantiate dataFile
+        // instantiate the dataFile
+        instantiateDataFile();
         // create a Rectangle to logically represent the charShape
         character = new Character(width, height);
         // create the coin path
         opt = new OptimalPath(width, height, dataFile);
         // create the optimal path
         cp = new CoinPath(width, height, opt);
+        // create the power path
+        powerPath = new PowerPath(width, height);
 
 
 
@@ -43,8 +50,14 @@ public class GameState extends com.badlogic.gdx.Game {
         //Use LibGDX's default Arial font.
         font = new BitmapFont();
         this.setScreen(new LoginScreen(this));
+    }
 
+    public void startGame() {
+        isRunning = true;
+    }
 
+    public void stopGame() {
+        isRunning = false;
     }
 
     private void instantiateDataFile() {
@@ -57,20 +70,17 @@ public class GameState extends com.badlogic.gdx.Game {
 
     public void render() {
         super.render(); //important!
-        update();
+        if (isRunning) update();
     }
 
     public void update() {
         updateCoinPathPos();
         // update character position and attributes
         character.update();
+        powerPath.update(character);
 
 
-        //Return to MainMenu Screen after a minute of game play
-        if (((System.currentTimeMillis() - startTime)/1000) > 30){
-            dataFile.close();
-            setScreen(new MainMenu(this));
-        }
+        checkIfGameOver();
     }
 
     private void updateCoinPathPos() {
@@ -78,9 +88,26 @@ public class GameState extends com.badlogic.gdx.Game {
         cp.updateCoinPath(character.charShape);
         opt.updateOptimalPath(character.charShape);
         opt.updateRangeOfMotion(character.getX());
+        long timeGameHasBeenRunning = (System.currentTimeMillis() - startTime);
+        gameScrollSpeed += .001;
+        System.out.println(gameScrollSpeed);
+
+    }
+
+    public void checkIfGameOver() {
+        //Return to MainMenu Screen after a minutes of game play
+        long timeGameHasBeenRunning = (System.currentTimeMillis() - startTime);
+        if (timeGameHasBeenRunning > Settings.getInstance().gameDuration * 1000 * 60){
+            dataFile.close();
+            this.setScreen(new MainMenu(this));
+        }
     }
 
 
+    @Override
+    public void pause() {
+        isRunning = false;
+    }
 
     public void dispose() {
         batch.dispose();
