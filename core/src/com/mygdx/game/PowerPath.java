@@ -40,7 +40,7 @@ public class PowerPath {
                 p.dispose();
             }
             // if power overlaps with character, add power to character
-            else if (p.getRectangle().overlaps(character.charShape)) {
+            else if (p.getRectangle().overlaps(character.charShape) && !character.isTransperent()) {
                 iter.remove();
                 character.powers.addPower(p);
             }

@@ -17,11 +17,14 @@ import java.util.List;
 public class Character {
     private Texture characterImage;
     private Texture characterImagePoisoned;
+    private int collisionCounter;
     public Rectangle charShape;
     public PowerContainer powers;
 
+
     private int screenWidth;
     private int screenHeight;
+    private boolean transperent = false;
 
 
     public Character(int sW, int sH) {
@@ -44,7 +47,26 @@ public class Character {
         screenHeight = sH;
     }
 
+    public void collision(){
+        collisionCounter = 300;
+        transperent = true;
+    }
+
+    public boolean isTransperent(){
+        return transperent;
+    }
+
     public void render(SpriteBatch batch) {
+        if (collisionCounter > 0){
+           collisionCounter--;
+            if (collisionCounter%10 != 0) {
+                return;
+            }
+        } else {
+            transperent = false;
+        }
+
+
         if (powers.isPoisoned()) {
             batch.draw(characterImagePoisoned, charShape.x, charShape.y);
         }
