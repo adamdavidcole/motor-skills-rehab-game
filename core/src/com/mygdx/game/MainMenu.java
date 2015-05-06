@@ -16,13 +16,13 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
 public class MainMenu implements Screen {
 
-    final Game game;
+    final GameState game;
     private Stage stage;
     private Texture background;
 
     OrthographicCamera camera;
 
-    public MainMenu(final Game gam) {
+    public MainMenu(final GameState gam) {
         game = gam;
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 800, 1280);

@@ -21,7 +21,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
  * Created by Anthony on 5/4/2015.
  */
 public class SettingScreen implements Screen {
-    final Game game;
+    final GameState game;
     private Label diffSliderLabel;
     private Label timeSliderLabel;
     private Label rangeSliderLabel;
@@ -32,7 +32,7 @@ public class SettingScreen implements Screen {
 
     OrthographicCamera camera;
 
-    public SettingScreen(final Game gam) {
+    public SettingScreen(final GameState gam) {
         this.game = gam;
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 800, 1280);

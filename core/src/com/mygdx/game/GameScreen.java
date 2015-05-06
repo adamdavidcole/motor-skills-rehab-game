@@ -15,16 +15,12 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.TimeUtils;
 
-import java.sql.Timestamp;
-
 
 public class GameScreen implements Screen {
-    final Game game;
+    final GameState game;
 //    private Texture characterImage;
     private OrthographicCamera camera;
-    private OptimalPath opt;
     //private Rectangle charShape;
-    private CoinPath cp;
     public static int SCROLL_VELOCITY = 100;
 
 //    private PoisonBottle pb;
@@ -34,9 +30,8 @@ public class GameScreen implements Screen {
     private float currentBgY;
     private long lastTimeBg;
     private Long startTime;
-    private Music gameMusic;
 
-    private DataFile dataFile;
+    private Music gameMusic;
 
     private Stage stage;
 
@@ -44,7 +39,7 @@ public class GameScreen implements Screen {
     private int width = 800;
 
 
-    public GameScreen(final Game gam) {
+    public GameScreen(final GameState gam) {
         this.game = gam;
         stage = new Stage();
 
@@ -95,19 +90,6 @@ public class GameScreen implements Screen {
         // create a Rectangle to logically represent the charShape
 
 
-        // data file for exporting research data
-        String userTag = LoginScreen.username;
-        String timestamp = new Timestamp(System.currentTimeMillis()).toString();
-        String filename = (userTag + timestamp + ".csv").replace(":", "-").replace(" ","_");
-        dataFile = new DataFile(filename);
-        dataFile.writeHeader(LoginScreen.username, timestamp);
-
-        // create the optimal path
-        opt = new OptimalPath(width, height, dataFile);
-
-        // create the coin path
-        cp = new CoinPath(width, height, opt);
-
         // create the power path
         powerPath = new PowerPath(width, height);
 
@@ -152,7 +134,7 @@ public class GameScreen implements Screen {
         Scoreboard sb = Scoreboard.getInstance();
         sb.renderScoreboard(game, height);
         game.character.render(game.batch);
-        cp.renderCoinPath(game.batch);
+        game.cp.renderCoinPath(game.batch);
 //        pb.render(game.batch);
         powerPath.render(game.batch);
         game.batch.end();
@@ -168,18 +150,12 @@ public class GameScreen implements Screen {
 //        }
 
 
-        // update the optimal path, coin path, and range of motion
-        cp.updateCoinPath(game.character.charShape);
-        opt.updateOptimalPath(game.character.charShape);
-        opt.updateRangeOfMotion(game.character.getX());
-        // update character position and attributes
-        game.character.update();
-
-        //Return to MainMenu Screen after a minute of game play
-        if (((System.currentTimeMillis() - startTime)/1000) > 60){
-            dataFile.close();
-            game.setScreen(new MainMenu(game));
-        }
+//
+//        //Return to MainMenu Screen after a minute of game play
+//        if (((System.currentTimeMillis() - startTime)/1000) > 60){
+//            dataFile.close();
+//            game.setScreen(new MainMenu(game));
+//        }
         // pb.update();
         powerPath.update(game.character);
 
@@ -224,7 +200,7 @@ public class GameScreen implements Screen {
     public void dispose() {
         //characterImage.dispose();
         //rainMusic.dispose();
-        cp.tearDown();
+//        cp.tearDown();
     }
 
 }
