@@ -93,7 +93,7 @@ public class OptimalPath {
         Iterator<Point> iter = refPoints.iterator();
         while (iter.hasNext()) {
             Point rp = iter.next();
-            rp.y += GameScreen.SCROLL_VELOCITY * Gdx.graphics.getDeltaTime();
+            rp.y += GameState.gameScrollSpeed * Gdx.graphics.getDeltaTime();
             if (rp.y >= charShape.y) {
                 float charMiddle = charShape.x + charShape.getWidth()/2;
                 writeToCSV(rp.x, charMiddle);

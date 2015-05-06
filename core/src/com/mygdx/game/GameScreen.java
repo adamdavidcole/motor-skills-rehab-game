@@ -15,43 +15,36 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.TimeUtils;
 
-import java.sql.Timestamp;
-
 
 public class GameScreen implements Screen {
-    final MyGdxGame game;
+    final GameState game;
 //    private Texture characterImage;
     private OrthographicCamera camera;
-    private OptimalPath opt;
     //private Rectangle charShape;
-    private int height = 1280;
-    private int width = 800;
-    private Character character;
-    private CoinPath cp;
-//    private PoisonBottle pb;
-    private PowerPath powerPath;
+    public static int SCROLL_VELOCITY = 100;
+
 //    private Background background;
     private Texture background;
     private float currentBgY;
     private long lastTimeBg;
-    private Long startTime;
-    private Music gameMusic;
 
-    private DataFile dataFile;
-
-    public static int SCROLL_VELOCITY = 200;
-    public int GAME_TIMER = 60;
+    //private Music gameMusic;
+    private Soundtrack soundtrack;
     private Stage stage;
 
+    private int height = 1280;
+    private int width = 800;
 
-    public GameScreen(final MyGdxGame gam) {
+
+    public GameScreen(final GameState gam) {
         this.game = gam;
         stage = new Stage();
 
         Gdx.input.setInputProcessor(stage);
-        gameMusic = Gdx.audio.newMusic(Gdx.files.internal("gameSong.mp3"));
-        gameMusic.setLooping(true);
-        gameMusic.play();
+        soundtrack = new Soundtrack();
+        //gameMusic = Gdx.audio.newMusic(Gdx.files.internal("gameSong.mp3"));
+        //gameMusic.setLooping(false);
+
 
         // load the image for the irishman, 64x64 pixels
         // characterImage = new Texture(Gdx.files.internal("bucket.png"));
@@ -64,57 +57,15 @@ public class GameScreen implements Screen {
         camera = new OrthographicCamera(width, height);
         camera.setToOrtho(false, width, height);
 
-        //create the stage for buttons
-        stage = new Stage();
-        Gdx.input.setInputProcessor(stage);
 
-        //create button table to hold textbuttons: play, settings and quit
-        Table buttonTable = new Table();
-        buttonTable.setFillParent(true);
+        // creates the button to go back to the main menu
+        generateBackButton();
 
-        //create button style
-        Texture buttonTexture = new Texture(Gdx.files.internal("MainMenuButton.png"));
-        TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
-        buttonStyle.font = game.font;
-        buttonStyle.up = new TextureRegionDrawable(new TextureRegion(buttonTexture));
 
-        //create quit button
-        TextButton backButton = new TextButton("BACK", buttonStyle);
-        buttonTable.add(backButton);
-        stage.addActor(buttonTable);
-
-        //add a listener for the quit button
-        backButton.addListener(new ChangeListener() {
-            @Override
-            public void changed (ChangeEvent event, Actor actor) {
-                //back to main menu of the app
-                game.setScreen(new MainMenu(game));
-            }
-        });
-
-        // create a Rectangle to logically represent the charShape
-        character = new Character(width, height);
-
-        // data file for exporting research data
-        String userTag = LoginScreen.username;
-        String timestamp = new Timestamp(System.currentTimeMillis()).toString();
-        String filename = (userTag + timestamp + ".csv").replace(":", "-").replace(" ","_");
-        dataFile = new DataFile(filename);
-        dataFile.writeHeader(LoginScreen.username, timestamp);
-
-        // create the optimal path
-        opt = new OptimalPath(width, height, dataFile);
-
-        // create the coin path
-        cp = new CoinPath(width, height, opt);
-
-        // create the power path
-        powerPath = new PowerPath(width, height);
 
         //create the background
 //        background = new Background(width, height);
         //note time when application starts
-        startTime = System.currentTimeMillis();
 
 //      pb = new PoisonBottle();
         background = new Texture(Gdx.files.internal("cloudBGSmall.png"));
@@ -151,10 +102,9 @@ public class GameScreen implements Screen {
 
         Scoreboard sb = Scoreboard.getInstance();
         sb.renderScoreboard(game, height);
-        character.render(game.batch);
-        cp.renderCoinPath(game.batch);
-//        pb.render(game.batch);
-        powerPath.render(game.batch);
+        game.character.render(game.batch);
+        game.cp.renderCoinPath(game.batch);
+        game.powerPath.render(game.batch);
         game.batch.end();
 
         stage.act(Gdx.graphics.getDeltaTime());
@@ -168,19 +118,13 @@ public class GameScreen implements Screen {
 //        }
 
 
-        // update the optimal path, coin path, and range of motion
-        cp.updateCoinPath(character.charShape);
-        opt.updateOptimalPath(character.charShape);
-        opt.updateRangeOfMotion(character.getX());
-        // update character position and attributes
-        character.update();
-        //Return to MainMenu Screen after a minute of game play
-        if (((System.currentTimeMillis() - startTime)/1000) > GAME_TIMER){
-            dataFile.close();
-            game.setScreen(new MainMenu(game));
-        }
+//
+//        //Return to MainMenu Screen after a minute of game play
+//        if (((System.currentTimeMillis() - startTime)/1000) > 60){
+//            dataFile.close();
+//            game.setScreen(new MainMenu(game));
+//        }
         // pb.update();
-        powerPath.update(character);
 
         // move the separator each 1s
         if(TimeUtils.nanoTime() - lastTimeBg > 10000000){
@@ -196,34 +140,78 @@ public class GameScreen implements Screen {
         }
     }
 
+
     @Override
     public void resize(int width, int height) {
     }
+
 
     @Override
     public void show() {
         // start the playback of the background music
         // when the screen is shown
         // rainMusic.play();
+        game.startGame();
+        game.startTime = System.currentTimeMillis();
+        soundtrack.gameMusic.play();
     }
 
     @Override
     public void hide() {
+        game.stopGame();
+        soundtrack.gameMusic.stop();
     }
 
     @Override
     public void pause() {
+//        game.stopGame();
+//        soundtrack.gameMusic.stop();
+
     }
 
     @Override
     public void resume() {
+        game.startGame();
+//        game.startTime = System.currentTimeMillis();
+//
+//        soundtrack.gameMusic.play();
     }
 
     @Override
     public void dispose() {
         //characterImage.dispose();
         //rainMusic.dispose();
-        cp.tearDown();
+//        cp.tearDown();
+    }
+
+    private void generateBackButton () {
+        //create the stage for buttons
+        stage = new Stage();
+        Gdx.input.setInputProcessor(stage);
+
+        //create button table to hold textbuttons: play, settings and quit
+        Table buttonTable = new Table();
+        buttonTable.setFillParent(true);
+
+        //create button style
+        Texture buttonTexture = new Texture(Gdx.files.internal("MainMenuButton.png"));
+        TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
+        buttonStyle.font = game.font;
+        buttonStyle.up = new TextureRegionDrawable(new TextureRegion(buttonTexture));
+
+        //create quit button
+        TextButton backButton = new TextButton("BACK", buttonStyle);
+        buttonTable.add(backButton);
+        stage.addActor(buttonTable);
+
+        //add a listener for the quit button
+        backButton.addListener(new ChangeListener() {
+            @Override
+            public void changed (ChangeEvent event, Actor actor) {
+                //back to main menu of the app
+                game.setScreen(new MainMenu(game));
+            }
+        });
     }
 
 }

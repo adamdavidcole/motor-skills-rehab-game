@@ -22,7 +22,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
  */
 // a class for the login screen where a user can enter their name before proceeding to main menu
 public class LoginScreen implements Screen {
-    private MyGdxGame game;
+    private GameState game;
     private OrthographicCamera camera;
     private Texture background;
     private Stage stage;
@@ -32,7 +32,7 @@ public class LoginScreen implements Screen {
 
     public static String username;
 
-    public LoginScreen(final MyGdxGame gam) {
+    public LoginScreen(final GameState gam) {
         game = gam;
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 800, 1280);

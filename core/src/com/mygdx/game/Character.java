@@ -25,14 +25,12 @@ public class Character {
 
 
     public Character(int sW, int sH) {
+        // create textures for character
         characterImage = new Texture(Gdx.files.internal("charactar4-01.png"));
         characterImagePoisoned = new Texture(Gdx.files.internal("charactar-02-poisoned.png"));
 
-
-
         // create a Rectangle to logically represent the charShape
         charShape = new Rectangle();
-        //System.out.println("height: " + characterImage.getHeight() + ", " + characterImage.getWidth());
         charShape.width = (int)(characterImage.getWidth() - characterImage.getWidth() * .35);
         charShape.height = (int)(characterImage.getHeight() - characterImage.getHeight() * .35);
         charShape.x = sW / 2 - charShape.width / 2; // center the charShape horizontally
@@ -64,11 +62,13 @@ public class Character {
     }
 
     private void shiftCharacter(int x) {
-        charShape.setPosition((int)(charShape.x + x * Gdx.graphics.getDeltaTime()),charShape.y);
+        int shiftVelocity = 5 - Settings.getInstance().rangeOfMotion;
+        charShape.setPosition((int)(charShape.x + x * shiftVelocity),charShape.y);
+
     }
 
     public void update() {
-        // update position using touch down position
+        // update position using touch down position - for testing purposes only
         if (Gdx.input.isTouched()) {
             Vector3 touchPos = new Vector3();
             touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
@@ -77,13 +77,13 @@ public class Character {
 
         // update position using keypad
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && powers.isPoisoned())
-            shiftCharacter(200);
+            shiftCharacter(1);
         else if (Gdx.input.isKeyPressed(Input.Keys.LEFT))
-            shiftCharacter(-200);
+            shiftCharacter(-1);
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && powers.isPoisoned())
-            shiftCharacter(-200);
+            shiftCharacter(-1);
         else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT))
-            shiftCharacter(200);
+            shiftCharacter(1);
 
         // make sure character stays within bounds of screen
         if (charShape.x < 0)

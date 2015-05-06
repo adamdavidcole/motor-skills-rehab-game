@@ -59,7 +59,7 @@ public class CoinPath {
         Iterator<Rectangle> iter = coins.iterator();
         while (iter.hasNext()) {
             Rectangle coin = iter.next();
-            coin.y += GameScreen.SCROLL_VELOCITY * Gdx.graphics.getDeltaTime();
+            coin.y += GameState.gameScrollSpeed * Gdx.graphics.getDeltaTime();
             if (coin.y > screenHeight)
                 iter.remove();
             if (coin.overlaps(charShape)) {
