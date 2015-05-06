@@ -113,7 +113,7 @@ public class MainMenu implements Screen {
 
         stage.act(Gdx.graphics.getDeltaTime());
         stage.draw();
-        stage.setDebugAll(true);
+        stage.setDebugAll(false);
 
             /*if(Gdx.input.isTouched())
 

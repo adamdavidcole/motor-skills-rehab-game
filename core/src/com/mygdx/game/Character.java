@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Ellipse;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 
@@ -28,15 +29,14 @@ public class Character {
         characterImagePoisoned = new Texture(Gdx.files.internal("charactar-02-poisoned.png"));
 
 
-        charShape = new Rectangle();
 
         // create a Rectangle to logically represent the charShape
         charShape = new Rectangle();
         //System.out.println("height: " + characterImage.getHeight() + ", " + characterImage.getWidth());
-        charShape.width = (int)(characterImage.getWidth());
-        charShape.height = (int)(characterImage.getHeight());
+        charShape.width = (int)(characterImage.getWidth() - characterImage.getWidth() * .35);
+        charShape.height = (int)(characterImage.getHeight() - characterImage.getHeight() * .35);
         charShape.x = sW / 2 - charShape.width / 2; // center the charShape horizontally
-        charShape.y = sH - charShape.height - 50; // bottom left corner of the charShape is 20 pixels above the bottom screen edge
+        charShape.y = sH - charShape.height - 75; // bottom left corner of the charShape is 20 pixels above the bottom screen edge
 
         powers = new PowerContainer(screenWidth, screenHeight);
 
@@ -46,9 +46,9 @@ public class Character {
 
     public void render(SpriteBatch batch) {
         if (powers.isPoisoned()) {
-            batch.draw(characterImagePoisoned, charShape.x, charShape.y, charShape.width, charShape.height);
+            batch.draw(characterImagePoisoned, charShape.x, charShape.y);
         }
-        else batch.draw(characterImage, charShape.x, charShape.y, charShape.width, charShape.height);
+        else batch.draw(characterImage, charShape.x, charShape.y);
     }
 
     public void setX(int x) {
@@ -63,29 +63,33 @@ public class Character {
         return (int) charShape.width;
     }
 
+    private void shiftCharacter(int x) {
+        charShape.setPosition((int)(charShape.x + x * Gdx.graphics.getDeltaTime()),charShape.y);
+    }
+
     public void update() {
         // update position using touch down position
         if (Gdx.input.isTouched()) {
             Vector3 touchPos = new Vector3();
             touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
-            charShape.setX((int)(touchPos.x - charShape.getWidth() / 2));
+            charShape.setPosition((int) (touchPos.x - charShape.width / 2), charShape.y);
         }
 
         // update position using keypad
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && powers.isPoisoned())
-            charShape.setX((int)(charShape.getX() + 200 * Gdx.graphics.getDeltaTime()));
+            shiftCharacter(200);
         else if (Gdx.input.isKeyPressed(Input.Keys.LEFT))
-            charShape.setX((int)(charShape.getX() - 200 * Gdx.graphics.getDeltaTime()));
+            shiftCharacter(-200);
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && powers.isPoisoned())
-            charShape.setX((int)(charShape.getX() - 200 * Gdx.graphics.getDeltaTime()));
+            shiftCharacter(-200);
         else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT))
-            charShape.setX((int)(charShape.getX() + 200 * Gdx.graphics.getDeltaTime()));
+            shiftCharacter(200);
 
         // make sure character stays within bounds of screen
-        if (charShape.getX() < 0)
-            charShape.setX(0);
-        if (charShape.getX() > screenWidth - charShape.getWidth())
-            charShape.setX(screenWidth - charShape.getWidth());
+        if (charShape.x < 0)
+            charShape.x = 0;
+        if (charShape.x > screenWidth - charShape.width)
+            charShape.x = screenWidth - charShape.width;
 
        powers.update();
     }
