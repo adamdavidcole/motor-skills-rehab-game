@@ -19,15 +19,14 @@ import java.sql.Timestamp;
 
 
 public class GameScreen implements Screen {
-    final MyGdxGame game;
+    final Game game;
 //    private Texture characterImage;
     private OrthographicCamera camera;
     private OptimalPath opt;
     //private Rectangle charShape;
-    private int height = 1280;
-    private int width = 800;
-    private Character character;
     private CoinPath cp;
+    public static int SCROLL_VELOCITY = 100;
+
 //    private PoisonBottle pb;
     private PowerPath powerPath;
 //    private Background background;
@@ -39,12 +38,13 @@ public class GameScreen implements Screen {
 
     private DataFile dataFile;
 
-    public static int SCROLL_VELOCITY = 200;
-    public int GAME_TIMER = 60;
     private Stage stage;
 
+    private int height = 1280;
+    private int width = 800;
 
-    public GameScreen(final MyGdxGame gam) {
+
+    public GameScreen(final Game gam) {
         this.game = gam;
         stage = new Stage();
 
@@ -93,7 +93,7 @@ public class GameScreen implements Screen {
         });
 
         // create a Rectangle to logically represent the charShape
-        character = new Character(width, height);
+
 
         // data file for exporting research data
         String userTag = LoginScreen.username;
@@ -151,7 +151,7 @@ public class GameScreen implements Screen {
 
         Scoreboard sb = Scoreboard.getInstance();
         sb.renderScoreboard(game, height);
-        character.render(game.batch);
+        game.character.render(game.batch);
         cp.renderCoinPath(game.batch);
 //        pb.render(game.batch);
         powerPath.render(game.batch);
@@ -169,18 +169,19 @@ public class GameScreen implements Screen {
 
 
         // update the optimal path, coin path, and range of motion
-        cp.updateCoinPath(character.charShape);
-        opt.updateOptimalPath(character.charShape);
-        opt.updateRangeOfMotion(character.getX());
+        cp.updateCoinPath(game.character.charShape);
+        opt.updateOptimalPath(game.character.charShape);
+        opt.updateRangeOfMotion(game.character.getX());
         // update character position and attributes
-        character.update();
+        game.character.update();
+
         //Return to MainMenu Screen after a minute of game play
-        if (((System.currentTimeMillis() - startTime)/1000) > GAME_TIMER){
+        if (((System.currentTimeMillis() - startTime)/1000) > 60){
             dataFile.close();
             game.setScreen(new MainMenu(game));
         }
         // pb.update();
-        powerPath.update(character);
+        powerPath.update(game.character);
 
         // move the separator each 1s
         if(TimeUtils.nanoTime() - lastTimeBg > 10000000){

@@ -21,7 +21,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
  * Created by Anthony on 5/4/2015.
  */
 public class SettingScreen implements Screen {
-    final MyGdxGame game;
+    final Game game;
     private Label diffSliderLabel;
     private Label timeSliderLabel;
     private Label rangeSliderLabel;
@@ -32,7 +32,7 @@ public class SettingScreen implements Screen {
 
     OrthographicCamera camera;
 
-    public SettingScreen(final MyGdxGame gam) {
+    public SettingScreen(final Game gam) {
         this.game = gam;
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 800, 1280);
@@ -191,7 +191,7 @@ public class SettingScreen implements Screen {
         //draw all items in buttonTable
         stage.act(Gdx.graphics.getDeltaTime());
         stage.draw();
-        stage.setDebugAll(true);
+        stage.setDebugAll(false);
 
     }
     @Override
