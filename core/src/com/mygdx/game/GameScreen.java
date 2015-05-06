@@ -6,7 +6,13 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.TimeUtils;
 
 import java.sql.Timestamp;
@@ -57,6 +63,34 @@ public class GameScreen implements Screen {
         // create the camera and the SpriteBatch
         camera = new OrthographicCamera(width, height);
         camera.setToOrtho(false, width, height);
+
+        //create the stage for buttons
+        stage = new Stage();
+        Gdx.input.setInputProcessor(stage);
+
+        //create button table to hold textbuttons: play, settings and quit
+        Table buttonTable = new Table();
+        buttonTable.setFillParent(true);
+
+        //create button style
+        Texture buttonTexture = new Texture(Gdx.files.internal("MainMenuButton.png"));
+        TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
+        buttonStyle.font = game.font;
+        buttonStyle.up = new TextureRegionDrawable(new TextureRegion(buttonTexture));
+
+        //create quit button
+        TextButton backButton = new TextButton("BACK", buttonStyle);
+        buttonTable.add(backButton);
+        stage.addActor(buttonTable);
+
+        //add a listener for the quit button
+        backButton.addListener(new ChangeListener() {
+            @Override
+            public void changed (ChangeEvent event, Actor actor) {
+                //back to main menu of the app
+                game.setScreen(new MainMenu(game));
+            }
+        });
 
         // create a Rectangle to logically represent the charShape
         character = new Character(width, height);

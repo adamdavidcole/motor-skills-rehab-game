@@ -24,6 +24,7 @@ public class SettingScreen implements Screen {
     final MyGdxGame game;
     private Label diffSliderLabel;
     private Label timeSliderLabel;
+    private Label rangeSliderLabel;
     private Stage stage;
     private Texture background;
     private Skin skin;
@@ -66,6 +67,14 @@ public class SettingScreen implements Screen {
         sliderTable.add(diffSlider);
         sliderTable.row();
 
+        //create rangeSlider
+        rangeSliderLabel = new Label("Range of Motion: Low", skin);
+        Slider rangeSlider = new Slider(1f, 3f, 1f, false, skin);
+        sliderTable.add(rangeSliderLabel);
+        sliderTable.row();
+        sliderTable.add(rangeSlider);
+        sliderTable.row();
+
         //create timeSlider
         timeSliderLabel = new Label("Game Play Duration: 1 Minute", skin);
         Slider timeSlider = new Slider(1f, 15f, 1f, false, skin);
@@ -103,6 +112,14 @@ public class SettingScreen implements Screen {
             }
         });
 
+        //add listener to range of motion slider
+        rangeSlider.addListener(new ChangeListener() {
+            public void changed(ChangeEvent event, Actor actor) {
+                int value = (int)((Slider) actor).getValue();
+                updateRangeSliderLabel(value);
+            }
+        });
+
         //add a listener for play button
         playButton.addListener(new ChangeListener() {
             @Override
@@ -132,6 +149,18 @@ public class SettingScreen implements Screen {
             diffSliderLabel.setText("Difficulty: Very Hard");
         }
 
+    }
+
+    private void updateRangeSliderLabel(int value){
+        if(value == 1){
+            rangeSliderLabel.setText("Range of Motion: Low");
+        }
+        else if(value == 2) {
+            rangeSliderLabel.setText("Range of Motion: Medium");
+        }
+        else{
+            rangeSliderLabel.setText("Range of Motion: High");
+        }
     }
 
     //updates time label to slider value
