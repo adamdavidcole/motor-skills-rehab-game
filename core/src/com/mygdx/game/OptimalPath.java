@@ -36,7 +36,8 @@ public class OptimalPath {
     private int maxXRange;
     private int minXRange;
 
-    private DataFile dataFile;
+    public DataFile dataFile;
+
 
     public OptimalPath(int sW, int sH, DataFile df) {
         screenWidth = sW;
@@ -124,7 +125,7 @@ public class OptimalPath {
 
     // writes the optimal and actual positions of the character as reference points pass the character
     private void writeToCSV(float optimal, float actual) {
-        dataFile.write(optimal, actual);
+        GameState.dataFile.write(optimal, actual);
     }
 
 }

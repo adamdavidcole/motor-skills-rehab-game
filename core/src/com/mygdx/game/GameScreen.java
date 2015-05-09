@@ -14,11 +14,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.TimeUtils;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 
 
 public class GameScreen implements Screen {
     final GameState game;
-//    private Texture characterImage;
+    private final FitViewport viewport;
+    //    private Texture characterImage;
     private OrthographicCamera camera;
     //private Rectangle charShape;
     public static int SCROLL_VELOCITY = 100;
@@ -54,9 +56,16 @@ public class GameScreen implements Screen {
         //rainMusic.setLooping(true);
 
         // create the camera and the SpriteBatch
-        camera = new OrthographicCamera(width, height);
-        camera.setToOrtho(false, width, height);
+       // camera = new OrthographicCamera(width, height);
+        //camera.setToOrtho(false, width, height);
+        float w = Gdx.graphics.getWidth();
+        float h = Gdx.graphics.getHeight();
+        camera = new OrthographicCamera();
+        camera.setToOrtho(false, 800, 1200);
+        camera.translate(0,255);
+        viewport = new FitViewport(w, h, camera);
 
+        viewport.apply();
 
         // creates the button to go back to the main menu
         generateBackButton();
@@ -85,11 +94,12 @@ public class GameScreen implements Screen {
         // arguments to glClearColor are the red, green
         // blue and alpha component in the range [0,1]
         // of the color to be used to clear the screen.
-        Gdx.gl.glClearColor(0, 0, 0.2f, 1);
+        Gdx.gl.glClearColor(.005f, .006f, .121f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         // tell the camera to update its matrices.
         camera.update();
+
 
         // tell the SpriteBatch to render in the
         // coordinate system specified by the camera.
@@ -143,6 +153,8 @@ public class GameScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
+        viewport.update(width, height);
+        stage.getViewport().update(width, height); //Stage viewport
     }
 
 
@@ -154,6 +166,8 @@ public class GameScreen implements Screen {
         game.startGame();
         game.startTime = System.currentTimeMillis();
         soundtrack.gameMusic.play();
+      //  game.instantiateDataFile();
+       // game.opt.dataFile = game.dataFile;
     }
 
     @Override

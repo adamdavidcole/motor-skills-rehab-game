@@ -12,11 +12,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 
 
 public class MainMenu implements Screen {
 
     final GameState game;
+    private final FitViewport viewport;
     private Stage stage;
     private Texture background;
 
@@ -24,8 +26,16 @@ public class MainMenu implements Screen {
 
     public MainMenu(final GameState gam) {
         game = gam;
+        //camera = new OrthographicCamera();
+        //camera.setToOrtho(false, 800, 1280);
+        float w = Gdx.graphics.getWidth();
+        float h = Gdx.graphics.getHeight();
         camera = new OrthographicCamera();
-        camera.setToOrtho(false, 800, 1280);
+        camera.setToOrtho(false, 800, 1200);
+        camera.translate(0,255);
+        viewport = new FitViewport(w, h, camera);
+
+        viewport.apply();
         //initializes menu screen items
         initialize();
         background = new Texture(Gdx.files.internal("menuBG.png"));
@@ -73,6 +83,7 @@ public class MainMenu implements Screen {
             public void changed (ChangeEvent event, Actor actor) {
                 System.out.println("CLICKED");
                 //move to gameplay screen
+               // game.instantiateDataFile();
                 game.setScreen(new GameScreen(game));
             }
         });
@@ -107,7 +118,7 @@ public class MainMenu implements Screen {
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(0, 0, 0.2f, 1);
+        Gdx.gl.glClearColor(.005f, .006f, .121f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 
@@ -133,8 +144,9 @@ public class MainMenu implements Screen {
 
         @Override
     public void resize(int width, int height) {
-
-    }
+            viewport.update(width, height);
+            stage.getViewport().update(width, height); //Stage viewport
+        }
 
     @Override
     public void pause() {

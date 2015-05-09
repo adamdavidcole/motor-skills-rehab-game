@@ -20,6 +20,7 @@ import java.io.IOException;
 public class DataFile {
     BufferedWriter bw;
 
+
     public DataFile(String filename) {
         try {
             bw = new BufferedWriter(new FileWriter(filename));

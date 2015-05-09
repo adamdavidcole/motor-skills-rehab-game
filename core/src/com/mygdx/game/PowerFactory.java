@@ -6,7 +6,7 @@ package com.mygdx.game;
 public class PowerFactory {
     public static Power createPower() {
         double rand = Math.random();
-        if (rand <= GameState.difficulty/9.0) {
+        if (rand <= GameState.difficulty/6.0) {
             return new PoisonBottle();
         }
         else {

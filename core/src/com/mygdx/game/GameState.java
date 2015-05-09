@@ -1,5 +1,6 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
@@ -11,7 +12,7 @@ public class GameState extends com.badlogic.gdx.Game {
     public OptimalPath opt;
     public CoinPath cp;
     public PowerPath powerPath;
-    private DataFile dataFile;
+    public static DataFile dataFile;
 
 
 
@@ -33,8 +34,10 @@ public class GameState extends com.badlogic.gdx.Game {
 
     @Override
     public void create() {
+        System.out.println(Gdx.graphics.getWidth());
+        System.out.println(Gdx.graphics.getHeight());
+
         // instantiate the dataFile
-        instantiateDataFile();
         // create a Rectangle to logically represent the charShape
         character = new Character(width, height);
         // create the coin path
@@ -60,7 +63,7 @@ public class GameState extends com.badlogic.gdx.Game {
         isRunning = false;
     }
 
-    private void instantiateDataFile() {
+    public void instantiateDataFile() {
         String userTag = LoginScreen.username;
         String timestamp = new Timestamp(System.currentTimeMillis()).toString();
         String filename = (userTag + timestamp + ".csv").replace(":", "-").replace(" ","_");
@@ -90,8 +93,6 @@ public class GameState extends com.badlogic.gdx.Game {
         opt.updateRangeOfMotion(character.getX());
         long timeGameHasBeenRunning = (System.currentTimeMillis() - startTime);
         gameScrollSpeed += .001;
-        System.out.println(gameScrollSpeed);
-
     }
 
     public void checkIfGameOver() {
