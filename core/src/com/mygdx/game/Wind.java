@@ -11,7 +11,12 @@ import com.badlogic.gdx.utils.TimeUtils;
  * Created by gabriel on 4/23/15.
  */
 public class Wind {
-    // TODO: NEEDS TO BE REPLACED WITH ACTUAL PNG IMAGE INSTEAD OF ALERT
+
+    public Boolean windActive = false;
+    public Boolean windBlowing = false;
+    public int windDuration = 0;
+    public Texture wAlert = new Texture(Gdx.files.internal("windAlert.png"));
+
     Texture texture = new Texture(Gdx.files.internal("wind-entering.png"));  // image of wind
     Rectangle wind;             // physical representation of wind
     private Sound windSound;    // blowing sound of wind
@@ -19,7 +24,7 @@ public class Wind {
     int height;                 // height of wind
     boolean draw;
     long lastTimeSpawned;       // last time spawned
-    double strength = 10000;   // for later calibration on strength or duration of wind
+    double strength = 5000;   // for later calibration on strength or duration of wind
     int numberOfStepsToEnter = 0;
     int numberOfStepsToExit = 0;
     int startingX;
@@ -35,6 +40,7 @@ public class Wind {
         wind.height = height;
         draw = true;
         lastTimeSpawned = TimeUtils.millis();
+        strength = 5000 + 1000*GameState.difficultySetting;
 
     }
 

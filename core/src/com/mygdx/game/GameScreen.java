@@ -38,11 +38,6 @@ public class GameScreen implements Screen {
     private Soundtrack soundtrack;
     private Stage stage;
 
-    private Boolean windActive = false;
-    private Boolean windBlowing = false;
-    private int windDuration = 0;
-    private Texture wAlert = new Texture(Gdx.files.internal("windAlert.png"));
-
 
     private long ONE_SEC_IN_NANO = 10000000;
     /**
@@ -98,8 +93,8 @@ public class GameScreen implements Screen {
 
         ////////////////////////////////////////////////////////////////////////
         //// WIND GRAPHICS - can't be done on thread or separately due to LibGDX
-        if (windActive) {
-            if (windBlowing) {
+        if (game.wind.windActive) {
+            if (game.wind.windBlowing) {
                 game.wind.render(game.batch);
                 // character is blown by the wind
                 game.character.shiftCharacter(-.3);
@@ -109,8 +104,8 @@ public class GameScreen implements Screen {
                 } else if (game.wind.entering()){ // if entering (the check updates the position)
                     game.wind.render(game.batch);
                 } else { // wind is alerting - about to enter
-                    game.batch.draw(wAlert, game.GAME_WORLD_WIDTH - wAlert.getWidth() - 50, game.GAME_WORLD_HEIGHT - wAlert.getHeight() - 80,
-                            wAlert.getWidth(), wAlert.getHeight());
+                    game.batch.draw(game.wind.wAlert, game.GAME_WORLD_WIDTH - game.wind.wAlert.getWidth() - 50, game.GAME_WORLD_HEIGHT - game.wind.wAlert.getHeight() - 80,
+                            game.wind.wAlert.getWidth(), game.wind.wAlert.getHeight());
                 }
             }
         }
@@ -137,12 +132,12 @@ public class GameScreen implements Screen {
         ///////////////////////////////////////////////////////////
         ///////////////// WIND SEGMENT
         // Note: must be done in main render loop because of how libGDX works
-        if (!windActive) {
+        if (!game.wind.windActive) {
             // .04% chance of spawning with enforced wait time in between spawns
-            windDuration = game.wind.update();
-            if (windDuration != 0) {
-                windActive = true;
-                System.out.println("Wind duration is "+windDuration);
+            game.wind.windDuration = game.wind.update();
+            if (game.wind.windDuration != 0) {
+                game.wind.windActive = true;
+                System.out.println("Wind duration is "+game.wind.windDuration);
 
                 final Sound windAlertBeep = Gdx.audio.newSound(Gdx.files.internal("windAlertBeep.wav"));
 
@@ -263,19 +258,19 @@ public class GameScreen implements Screen {
                     game.wind.windExit();
                     setWind(false);
                 }
-            }, ((float)windDuration/1000.0f)); // 1000 milli seconds in a second
+            }, ((float)game.wind.windDuration/1000.0f)); // 1000 milli seconds in a second
         } else {
             game.wind.stopSound();
             // set a timer to dispose once done exiting
             Timer.schedule(new Timer.Task() {
                 @Override
                 public void run() {
-                    windActive = false;
+                    game.wind.windActive = false;
                     game.wind.doneExiting();
                 }
-            }, 4.0f); // after 4 seconds
+            }, 9.0f); // after 4 seconds
         }
-        windBlowing = blowing;
+        game.wind.windBlowing = blowing;
     }
 
 }
