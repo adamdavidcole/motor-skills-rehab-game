@@ -19,7 +19,7 @@ public class DesktopLauncher {
         config.height = (int)screenSize.getHeight();
         //config.width = 800;
         //config.height = 850;
-        //config.fullscreen = true;
+        config.fullscreen = true;
         config.resizable = false;
 		new LwjglApplication(new GameState(), config);
 	}

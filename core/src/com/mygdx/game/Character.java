@@ -12,36 +12,46 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Created by acole9 on 4/15/15.
+ * This class models the game character and handles movement, collisions and rendering
  */
 public class Character {
-    private Texture characterImage;
-    private Texture characterImagePoisoned;
-    public Rectangle charShape;
-    public PowerContainer powers;
+    private Texture characterImage;          // image of character
+    private Texture characterImagePoisoned;  // image of character poisoned
+    public Rectangle charShape;              // physical representation of character
+    public PowerContainer powers;            // container of powers character has
 
-    private int screenWidth;
-    private int screenHeight;
+    private float CHARACTER_SCALE_FACTOR = 0.35f; // scale factor for character images
+    private int VERTICAL_POS_OFFSET = 75;         // space above character and below top of screen
+    private int MAX_RANGE_OF_MOTION = 5;          // maximum range of motion setting
 
-
+    /**
+     * Character constructor creates character textures, shapes, and power container
+     * @param sW - screen width
+     * @param sH - screen height
+     */
     public Character(int sW, int sH) {
-        // create textures for character
+        // create textures for character images
         characterImage = new Texture(Gdx.files.internal("charactar4-01.png"));
         characterImagePoisoned = new Texture(Gdx.files.internal("charactar-02-poisoned.png"));
 
         // create a Rectangle to logically represent the charShape
         charShape = new Rectangle();
-        charShape.width = (int)(characterImage.getWidth() - characterImage.getWidth() * .35);
-        charShape.height = (int)(characterImage.getHeight() - characterImage.getHeight() * .35);
-        charShape.x = sW / 2 - charShape.width / 2; // center the charShape horizontally
-        charShape.y = sH - charShape.height - 75; // bottom left corner of the charShape is 20 pixels above the bottom screen edge
+        charShape.width = (int)(characterImage.getWidth() - characterImage.getWidth()
+                * CHARACTER_SCALE_FACTOR);
+        charShape.height = (int)(characterImage.getHeight() - characterImage.getHeight()
+                * CHARACTER_SCALE_FACTOR);
+        // center the charShape horizontally
+        charShape.x = sW / 2 - charShape.width / 2;
+        // bottom left corner of the charShape is vertically offset from top of screen
+        charShape.y = sH - charShape.height - VERTICAL_POS_OFFSET;
 
-        powers = new PowerContainer(screenWidth, screenHeight);
-
-        screenWidth = sW;
-        screenHeight = sH;
+        powers = new PowerContainer(sW, sH);
     }
 
+    /**
+     * Render appropriate image for character depending on state
+     * @param batch
+     */
     public void render(SpriteBatch batch) {
         if (powers.isPoisoned()) {
             batch.draw(characterImagePoisoned, charShape.x, charShape.y);
@@ -49,24 +59,34 @@ public class Character {
         else batch.draw(characterImage, charShape.x, charShape.y);
     }
 
-    public void setX(int x) {
-        charShape.x = x;
-    }
-
+    /**
+     * Returns current horizontal position of x
+     */
     public int getX(){
         return (int) charShape.x;
     }
 
+    /**
+     * Returns width of character shape
+     */
     public int getWidth() {
         return (int) charShape.width;
     }
 
+    /**
+     * Shift character's position x spots relative to current position. Amount shifted
+     * is dependedent on user's range of motion.
+     */
     private void shiftCharacter(int x) {
-        int shiftVelocity = 5 - Settings.getInstance().rangeOfMotion;
+        // velocity of character is calculated using range of motion
+        int shiftVelocity = MAX_RANGE_OF_MOTION - GameState.rangeOfMotionSetting;
+        // Shift character horizontally according to velocity
         charShape.setPosition((int)(charShape.x + x * shiftVelocity),charShape.y);
-
     }
 
+    /**
+     * Update state of character including position and powers
+     */
     public void update() {
         // update position using touch down position - for testing purposes only
         if (Gdx.input.isTouched()) {
@@ -75,7 +95,7 @@ public class Character {
             charShape.setPosition((int) (touchPos.x - charShape.width / 2), charShape.y);
         }
 
-        // update position using keypad
+        // update position of character by one unit using keypad
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && powers.isPoisoned())
             shiftCharacter(1);
         else if (Gdx.input.isKeyPressed(Input.Keys.LEFT))
@@ -88,8 +108,8 @@ public class Character {
         // make sure character stays within bounds of screen
         if (charShape.x < 0)
             charShape.x = 0;
-        if (charShape.x > screenWidth - charShape.width)
-            charShape.x = screenWidth - charShape.width;
+        if (charShape.x > GameState.GAME_WORLD_WIDTH - charShape.width*1.5)
+            charShape.x = GameState.GAME_WORLD_WIDTH - charShape.width*1.5f;
 
        powers.update();
     }

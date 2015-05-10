@@ -11,10 +11,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import java.util.Iterator;
 
 
-/*
- * Created by William Schiela on 4/14/15
+/**
+ * A class to handle the spawning of coins and all other coin-related functionality
  */
-// a class to handle the spawning of coins and all other coin-related functionality
 public class CoinPath {
     public static final int COIN_WIDTH = 40;
     public static final int COIN_HEIGHT = 40;

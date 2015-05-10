@@ -7,7 +7,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.TimeUtils;
 
 /**
- * Created by William Schiela on 4/25/2015.
+ * Times 2 multiplier power up doubles the score of the user
  */
 public class Times2Multiplier extends Power {
 

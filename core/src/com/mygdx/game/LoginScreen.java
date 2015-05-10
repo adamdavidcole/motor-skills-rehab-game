@@ -22,13 +22,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 /**
- * Created by William Schiela on 4/25/2015.
+ * Generates the login screen so the user can input his username to be saved with the datafile
  */
 // a class for the login screen where a user can enter their name before proceeding to main menu
 public class LoginScreen implements Screen {
     private  FitViewport viewport;
     private GameState game;
-    //private OrthographicCamera camera;
     private Texture background;
     private Stage stage;
     private Table table;
@@ -36,41 +35,25 @@ public class LoginScreen implements Screen {
     private TextButton okButton;
     private Sprite sprite;
 
-//    private int GAME_WORLD_WIDTH = 400;
-//    private int GAME_WORLD_HEIGHT = 640;
-//    private float aspectRatio = (float) Gdx.graphics.getWidth() / (float) Gdx.graphics.getHeight();
-
     public static String username;
 
+    /**
+     * Login screen constructor. Instantiates the background and initializes the login
+     * buttons and fields.
+     * @param gam
+     */
     public LoginScreen(final GameState gam) {
         game = gam;
         background = new Texture(Gdx.files.internal("menuBG2.png"));
         sprite = new Sprite(background);
         sprite.setSize(game.GAME_WORLD_WIDTH,game.GAME_WORLD_HEIGHT);
 
-//        float w = Gdx.graphics.getWidth();
-//        float h = Gdx.graphics.getHeight();
-//        camera = new OrthographicCamera(GAME_WORLD_HEIGHT * aspectRatio, GAME_WORLD_HEIGHT);
-//        camera.position.set(GAME_WORLD_WIDTH/2f,GAME_WORLD_HEIGHT/2f,0);
-
-        //camera.setToOrtho(false, w, h);
-        //camera.translate(0,0,0);
-        //camera.translate(0,215);
-//        System.out.println("camera: " + camera.viewportWidth + ", " + camera.viewportHeight);
-//        System.out.println("bg: " + background.getWidth() + ", " + background.getHeight());
-
-//        viewport = new FitViewport(w, h, camera);
-//        viewport.apply();
-//        System.out.println("camera: " + camera.viewportWidth + ", " + camera.viewportHeight);
-//        System.out.println("bg: " + background.getWidth() + ", " + background.getHeight());
-
-        //camera.position.set(camera.viewportWidth/2,camera.viewportHeight/2,0);
-
-        //camera.update();
-        //initializes menu screen items
         init();
     }
 
+    /**
+     * Initializes the login screen and buttons
+     */
     private void init() {
         game.camera.update();
         game.batch.setProjectionMatrix(game.camera.combined);
@@ -124,14 +107,18 @@ public class LoginScreen implements Screen {
 
     }
 
+    /**
+     * Renders the login screen
+     * @param delta
+     */
     public void render(float delta) {
         game.camera.update();
         Gdx.gl.glClearColor(.005f, .006f, .121f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        // render the screen background
         game.batch.begin();
         game.batch.setProjectionMatrix(game.camera.combined);
-        //game.batch.draw(sprite);
-        //game.batch.draw(background, 0, 0);
         sprite.draw(game.batch);
         game.batch.end();
 
@@ -139,46 +126,28 @@ public class LoginScreen implements Screen {
         stage.act(Gdx.graphics.getDeltaTime());
         stage.draw();
         stage.setDebugAll(true);
-
-        if (Gdx.input.isTouched()) {
-            Vector3 touchPos = new Vector3();
-            touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
-            System.out.println("touchposx: " + touchPos.x + "; " + touchPos.y);
-        }
-
-
     }
 
     @Override
     public void show() {
-
     }
     @Override
     public void resize(int width, int height) {
-//        viewport.update(width, height);
-  //      stage.getViewport().update(width, height); //Stage viewport
     }
-
-
-
 
     @Override
     public void pause() {
-
     }
 
     @Override
     public void resume() {
-
     }
 
     @Override
     public void hide() {
-
     }
 
     @Override
     public void dispose() {
-
     }
 }

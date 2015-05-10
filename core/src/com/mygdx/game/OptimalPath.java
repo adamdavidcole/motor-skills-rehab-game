@@ -10,12 +10,10 @@ import java.awt.Point;
 import java.util.Iterator;
 
 /**
- * Created by William Schiela on 4/15/2015.
+ * A class to represent the optimal path along which coins spawn
+ * the optimal path is a sinusoid centered on the screen with a randomly varying amplitude every
+ * half-period
  */
-
-// a class to represent the optimal path along which coins spawn
-// the optimal path is a sinusoid centered on the screen with a randomly varying amplitude every
-// half-period
 public class OptimalPath {
     // width and height of the screen on which the path exists
     private int screenWidth;

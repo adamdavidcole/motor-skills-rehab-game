@@ -7,75 +7,85 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import java.sql.Timestamp;
 
+/**
+ * Holds all aspects and components of the game state such as the camera,
+ * characters, coins, the clock, etc.
+ */
 public class GameState extends com.badlogic.gdx.Game {
+    // camera and screen dimensions
     public static OrthographicCamera camera;
     public static int GAME_WORLD_WIDTH;
     public static int GAME_WORLD_HEIGHT;
-//    private float aspectRatio = (float) Gdx.graphics.getWidth() / (float) Gdx.graphics.getHeight();
 
-
+    // physical game state components
     public Character character;
     public OptimalPath opt;
     public CoinPath cp;
     public PowerPath powerPath;
     public static DataFile dataFile;
 
-
-
+    // render game components
     public SpriteBatch batch;
     public BitmapFont font;
 
-    private int height = 1280;
-    private int width = 800;
-
-    public int scrollVelocity = 200;
-    public int remainingTimeSecs = 60;
-
+    // internal game state
     public Long startTime = System.currentTimeMillis();
-
     public boolean isRunning = false;
-    public static float gameScrollSpeed = 75 + 25 * Settings.getInstance().difficulty;
-    public static int difficulty = 1;
+    public static int difficultySetting = 1;
+    public static float gameScrollSpeed = 75 + 25 * difficultySetting;
+    public static int gameDurationSetting = 15*60;
+    public static int rangeOfMotionSetting = 1;
 
 
+    /**
+     * Creates an instance of the game by instantiating the camera based on screen
+     * coordinates, the separate game components, and sets the first screen.
+     */
     @Override
     public void create() {
-        System.out.println(Gdx.graphics.getWidth());
-        System.out.println(Gdx.graphics.getHeight());
-        float w = Gdx.graphics.getWidth();
-        float h = Gdx.graphics.getHeight();
-        GAME_WORLD_WIDTH = 800;
-        GAME_WORLD_HEIGHT  = 850;
-        float aspectRatio =  w / h;
+        // set up game camera to use for all screens
+        float w = Gdx.graphics.getWidth();  // screen width
+        float h = Gdx.graphics.getHeight(); // screen height
+        GAME_WORLD_WIDTH = 800;             // world width
+        GAME_WORLD_HEIGHT  = 850;           // world height
+        float aspectRatio =  w / h;         // aspect ratio of screen
 
+        // create a new orthographic camera for the world and center it
         camera = new OrthographicCamera(GAME_WORLD_HEIGHT * aspectRatio, GAME_WORLD_HEIGHT);
         camera.position.set(GAME_WORLD_WIDTH/2f,GAME_WORLD_HEIGHT/2f,0);
-        // instantiate the dataFile
-        // create a Rectangle to logically represent the charShape
+
+        // instantiate the physical components of the game
         character = new Character(GAME_WORLD_WIDTH, GAME_WORLD_HEIGHT);
-        // create the coin path
         opt = new OptimalPath(GAME_WORLD_WIDTH, GAME_WORLD_HEIGHT, dataFile);
-        // create the optimal path
         cp = new CoinPath(GAME_WORLD_WIDTH, GAME_WORLD_HEIGHT, opt);
-        // create the power path
         powerPath = new PowerPath(GAME_WORLD_WIDTH, GAME_WORLD_HEIGHT);
 
 
-
+        // instantiate the render components of the game
         batch = new SpriteBatch();
-        //Use LibGDX's default Arial font.
         font = new BitmapFont();
+
+        // upon creation of the game, set screen to login screen
         this.setScreen(new LoginScreen(this));
     }
 
+    /**
+     * Changes the state of the game to running
+     */
     public void startGame() {
         isRunning = true;
     }
 
+    /**
+     * Changes the state of the game to not running
+     */
     public void stopGame() {
         isRunning = false;
     }
 
+    /**
+     * Instantiates the output data file with the name from provided by the user at login
+     */
     public void instantiateDataFile() {
         String userTag = LoginScreen.username;
         String timestamp = new Timestamp(System.currentTimeMillis()).toString();
@@ -84,46 +94,64 @@ public class GameState extends com.badlogic.gdx.Game {
         dataFile.writeHeader(LoginScreen.username, timestamp);
     }
 
+    /**
+     * Loop called every 1/60 of a second to update the game state. Only updates when game is
+     * running.
+     */
     public void render() {
         camera.update();
         super.render(); //important!
         if (isRunning) update();
     }
 
+    /**
+     * Updates the state of the game.
+     */
     public void update() {
-        updateCoinPathPos();
-        // update character position and attributes
-        character.update();
-        powerPath.update(character);
+        updateCoinPathsPos();   // update coin paths
+        character.update();     // update state of character
+        powerPath.update(character); // update power path
+        gameScrollSpeed += .001; // increment the game speed
 
-
+        // end game if it exceeds the duration set in settings
         checkIfGameOver();
     }
 
-    private void updateCoinPathPos() {
-        // update the optimal path, coin path, and range of motion
+    /**
+     * Updates the position of the coin path and the optimal path
+     */
+    private void updateCoinPathsPos() {
         cp.updateCoinPath(character.charShape);
         opt.updateOptimalPath(character.charShape);
         opt.updateRangeOfMotion(character.getX());
         long timeGameHasBeenRunning = (System.currentTimeMillis() - startTime);
-        gameScrollSpeed += .001;
     }
 
+    /**
+     * Compares how long the game has been running to the duration of the game
+     * set in settings and closes the game when the duration is exceeded.
+     */
     public void checkIfGameOver() {
         //Return to MainMenu Screen after a minutes of game play
         long timeGameHasBeenRunning = (System.currentTimeMillis() - startTime);
-        if (timeGameHasBeenRunning > Settings.getInstance().gameDuration * 1000 * 60){
+        if (timeGameHasBeenRunning > gameDurationSetting * 1000 * 60){
             dataFile.close();
             this.setScreen(new MainMenu(this));
         }
     }
 
 
+    /**
+     * Pauses the state of the game
+     */
     @Override
     public void pause() {
         isRunning = false;
     }
 
+    /**
+     * Releases memory on destruction
+     */
     public void dispose() {
         batch.dispose();
         font.dispose();

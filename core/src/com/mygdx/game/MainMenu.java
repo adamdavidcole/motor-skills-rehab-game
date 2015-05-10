@@ -14,7 +14,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
-
+/**
+ * Generates the main menu screen with options to quit, change settings, and play game
+ */
 public class MainMenu implements Screen {
 
     final GameState game;
@@ -22,6 +24,10 @@ public class MainMenu implements Screen {
     private Texture background;
 
 
+    /**
+     * Constructor for main menu screen that initializes menu buttons and background
+     * @param gam
+     */
     public MainMenu(final GameState gam) {
         game = gam;
         //initializes menu screen items
@@ -29,6 +35,9 @@ public class MainMenu implements Screen {
         background = new Texture(Gdx.files.internal("menuBG2.png"));
     }
 
+    /**
+     * Initializes main menu buttons table including PLAY, SETTINGS, and QUIT buttons.
+     */
     public void initialize(){
         //create the stage for buttons
         stage = new Stage();
@@ -96,38 +105,35 @@ public class MainMenu implements Screen {
 
     }
 
-    @Override
-    public void show() {
 
-    }
-
+    /**
+     * Renders menu screen with background and main menu buttons
+     * @param delta
+     */
     @Override
     public void render(float delta) {
         Gdx.gl.glClearColor(.005f, .006f, .121f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         game.camera.update();
 
+        // draw background
         game.batch.begin();
         game.batch.draw(background, 0, 0);
-
-        /*game.font.draw(game.batch,"Welcome to Irish Frenzy!!! ",100,150);
-        game.font.draw(game.batch,"Tap anywhere to begin!",100,100);*/
         game.batch.end();
-        //draw all items in buttonTable
 
+
+        //draw all items in buttonTable
         stage.act(Gdx.graphics.getDeltaTime());
         stage.draw();
         stage.setDebugAll(false);
+     }
 
-            /*if(Gdx.input.isTouched())
+    @Override
+    public void show() {
+    }
 
-            {
-                game.setScreen(new GameScreen(game));
-                dispose();
-            }*/
-        }
 
-        @Override
+    @Override
     public void resize(int width, int height) {
     }
 
@@ -137,12 +143,10 @@ public class MainMenu implements Screen {
 
     @Override
     public void resume() {
-
     }
 
     @Override
     public void hide() {
-
     }
 
     @Override

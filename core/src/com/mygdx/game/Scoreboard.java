@@ -1,10 +1,8 @@
 package com.mygdx.game;
 
 /**
- * Created by William Schiela on 4/14/2015.
+ * A class to track game player data such as number of coins, points, and point multipliers
  */
-
-//  a class to track game player data such as number of coins, points, and point multipliers
 public class Scoreboard {
     private static Scoreboard instance;
     private int points;

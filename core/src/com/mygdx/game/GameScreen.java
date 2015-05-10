@@ -18,22 +18,17 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 
 
 public class GameScreen implements Screen {
+    // Universal game state
     final GameState game;
-  //  private final FitViewport viewport;
-    //    private Texture characterImage;
-    //private Rectangle charShape;
-    public static int SCROLL_VELOCITY = 100;
 
-//    private Background background;
+    // background image and positions
     private Texture background;
     private float currentBgY;
     private long lastTimeBg;
 
-    //private Music gameMusic;
+    // components of main game screen
     private Soundtrack soundtrack;
     private Stage stage;
-
-
 
 
     public GameScreen(final GameState gam) {
@@ -42,55 +37,22 @@ public class GameScreen implements Screen {
 
         Gdx.input.setInputProcessor(stage);
         soundtrack = new Soundtrack();
-        //gameMusic = Gdx.audio.newMusic(Gdx.files.internal("gameSong.mp3"));
-        //gameMusic.setLooping(false);
 
-
-        // load the image for the irishman, 64x64 pixels
-        // characterImage = new Texture(Gdx.files.internal("bucket.png"));
-
-        // load the rain background "music"
-        //rainMusic = Gdx.audio.newMusic(Gdx.files.internal("rain.mp3"));
-        //rainMusic.setLooping(true);
-
-        // create the camera and the SpriteBatch
-       // camera = new OrthographicCamera(width, height);
-        //camera.setToOrtho(false, width, height);
-//        float w = Gdx.graphics.getWidth();
-//        float h = Gdx.graphics.getHeight();
-//        camera = new OrthographicCamera(w,h);
-//        camera.setToOrtho(false, 800, 1280);
-//        viewport = new FitViewport(w, h, camera);
-
-    //    viewport.apply();
 
         // creates the button to go back to the main menu
         generateBackButton();
 
-
-
-        //create the background
-//        background = new Background(width, height);
-        //note time when application starts
-
-//      pb = new PoisonBottle();
+        // instantiates background
         background = new Texture(Gdx.files.internal("cloudBGSmall.png"));
-// the separator first appear at the position 800 (the edge of the screen, see
-// the camera above)
+        // curent position of background
         currentBgY = game.GAME_WORLD_HEIGHT;
-        // set lastTimeBg to current time
+        // last time background looped
         lastTimeBg = TimeUtils.nanoTime();
-
-        
-
     }
 
     @Override
     public void render(float delta) {
-        // clear the screen with a dark blue color. The
-        // arguments to glClearColor are the red, green
-        // blue and alpha component in the range [0,1]
-        // of the color to be used to clear the screen.
+        // clear the screen with a dark blue color.
         Gdx.gl.glClearColor(.005f, .006f, .121f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
@@ -114,34 +76,21 @@ public class GameScreen implements Screen {
         game.powerPath.render(game.batch);
         game.batch.end();
 
+        // draw the button
         stage.act(Gdx.graphics.getDeltaTime());
         stage.draw();
-        stage.setDebugAll(true);
-
-//
-//        if (character.charShape.overlaps(pb.getRectangle())) {
-//            character.powers.add(pb);
-//            pb.dispose();
-//        }
+        stage.setDebugAll(false);
 
 
-//
-//        //Return to MainMenu Screen after a minute of game play
-//        if (((System.currentTimeMillis() - startTime)/1000) > 60){
-//            dataFile.close();
-//            game.setScreen(new MainMenu(game));
-//        }
-        // pb.update();
-
-        // move the separator each 1s
+        // move the background separator each 1s
         if(TimeUtils.nanoTime() - lastTimeBg > 10000000){
-            // move the separator 50px
+            // move the separator 1px
             currentBgY += 1;
             // set the current time to lastTimeBg
             lastTimeBg = TimeUtils.nanoTime();
         }
 
-// if the seprator reaches the screen edge, move it back to the first position
+       // if the background seprator reaches the screen edge, move it back to the first position
         if(currentBgY > game.GAME_WORLD_HEIGHT){
             currentBgY = 0;
         }
@@ -150,23 +99,22 @@ public class GameScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
-        //viewport.update(width, height);
-        //stage.getViewport().update(width, height); //Stage viewport
     }
 
 
+    /**
+     * Begin game, music, and game clock when this screen is shown
+     */
     @Override
     public void show() {
-        // start the playback of the background music
-        // when the screen is shown
-        // rainMusic.play();
         game.startGame();
         game.startTime = System.currentTimeMillis();
         soundtrack.gameMusic.play();
-      //  game.instantiateDataFile();
-       // game.opt.dataFile = game.dataFile;
     }
 
+    /**
+     * Pause the game and music when this screen is hidden
+     */
     @Override
     public void hide() {
         game.stopGame();
@@ -175,26 +123,23 @@ public class GameScreen implements Screen {
 
     @Override
     public void pause() {
-//        game.stopGame();
-//        soundtrack.gameMusic.stop();
-
     }
 
+    /**
+     * Resume the game when the screen resumed
+     */
     @Override
     public void resume() {
         game.startGame();
-//        game.startTime = System.currentTimeMillis();
-//
-//        soundtrack.gameMusic.play();
     }
 
     @Override
     public void dispose() {
-        //characterImage.dispose();
-        //rainMusic.dispose();
-//        cp.tearDown();
     }
 
+    /**
+     * Genrates the back button that returns user to main menu screen
+     */
     private void generateBackButton () {
         //create the stage for buttons
         stage = new Stage();

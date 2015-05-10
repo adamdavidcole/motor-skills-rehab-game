@@ -28,7 +28,7 @@ public class PowerPath {
 
     public void update(Character character) {
         // determine if enough time has passed since last power spawn
-        int currSpawnInterval = spawnInterval - GameState.difficulty * 2000;
+        int currSpawnInterval = spawnInterval - GameState.difficultySetting * 2000;
         //System.out.println(GameState.difficulty);
         if (TimeUtils.millis() - lastPowerSpawn > currSpawnInterval && Math.random() > .5) {
             spawnPower();

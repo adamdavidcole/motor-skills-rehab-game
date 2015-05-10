@@ -30,7 +30,6 @@ public class SettingScreen implements Screen {
     private Skin skin;
 
 
-
     public SettingScreen(final GameState gam) {
         this.game = gam;
 
@@ -52,9 +51,6 @@ public class SettingScreen implements Screen {
         //create the table for the sliders
         Table sliderTable = new Table();
         sliderTable.setFillParent(true);
-
-
-
 
         //create diffSlider
         diffSliderLabel = new Label("Difficulty: Very Easy", skin);
@@ -97,9 +93,7 @@ public class SettingScreen implements Screen {
         diffSlider.addListener(new ChangeListener() {
             public void changed(ChangeEvent event, Actor actor) {
                 int value = (int)((Slider) actor).getValue();
-                Settings.getInstance().difficulty = value;
-                GameState.difficulty = value;
-                System.out.print("vale " + GameState.difficulty);
+                GameState.difficultySetting = value;
                 game.gameScrollSpeed = 100 * value;
                 updateDiffSliderLabel(value);
             }
@@ -109,8 +103,7 @@ public class SettingScreen implements Screen {
         timeSlider.addListener(new ChangeListener() {
             public void changed(ChangeEvent event, Actor actor) {
                 int value = (int)((Slider) actor).getValue();
-                Settings.getInstance().gameDuration = value;
-
+                GameState.gameDurationSetting = value;
                 updateTimeSliderLabel(value);
             }
         });
@@ -119,8 +112,7 @@ public class SettingScreen implements Screen {
         rangeSlider.addListener(new ChangeListener() {
             public void changed(ChangeEvent event, Actor actor) {
                 int value = (int)((Slider) actor).getValue();
-                Settings.getInstance().rangeOfMotion = value;
-                System.out.println("Value: " + value + "; Settings updated: " + Settings.getInstance().rangeOfMotion);
+                GameState.rangeOfMotionSetting = value;
                 updateRangeSliderLabel(value);
             }
         });
@@ -179,11 +171,6 @@ public class SettingScreen implements Screen {
     }
 
     @Override
-    public void show() {
-
-    }
-
-    @Override
     public void render(float delta) {
         Gdx.gl.glClearColor(.005f, .006f, .121f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -199,28 +186,28 @@ public class SettingScreen implements Screen {
         stage.setDebugAll(false);
 
     }
+
+    @Override
+    public void show() {
+    }
+
     @Override
     public void resize(int width, int height) {
-
     }
 
     @Override
     public void pause() {
-
     }
 
     @Override
     public void resume() {
-
     }
 
     @Override
     public void hide() {
-
     }
 
     @Override
     public void dispose() {
-
     }
 }
