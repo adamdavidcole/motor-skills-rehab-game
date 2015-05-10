@@ -2,10 +2,8 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -16,9 +14,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.Timer;
-
-import java.sql.Timestamp;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 
 
 /**
@@ -46,7 +41,7 @@ public class GameScreen implements Screen {
      */
     public GameScreen(final GameState gam) {
         this.game = gam;
-        stage = new Stage();
+
 
         Gdx.input.setInputProcessor(stage);
         soundtrack = new Soundtrack();
@@ -230,12 +225,13 @@ public class GameScreen implements Screen {
         buttonStyle.font = game.font;
         buttonStyle.up = new TextureRegionDrawable(new TextureRegion(buttonTexture));
 
-        //create quit button
+        //create back button
         TextButton backButton = new TextButton("BACK", buttonStyle);
         buttonTable.add(backButton);
+        buttonTable.top().right().padRight(50);
         stage.addActor(buttonTable);
 
-        //add a listener for the quit button
+        //add a listener for the back button
         backButton.addListener(new ChangeListener() {
             @Override
             public void changed (ChangeEvent event, Actor actor) {
