@@ -16,6 +16,8 @@ import java.util.List;
  */
 public class Character {
     private Texture characterImage;          // image of character
+    private Texture characterImageLeanRight;          // image of character tilted right
+    private Texture characterImageLeanLeft;          // image of character tilted left
     private Texture characterImagePoisoned;  // image of character poisoned
     public Rectangle charShape;              // physical representation of character
     public PowerContainer powers;            // container of powers character has
@@ -32,6 +34,8 @@ public class Character {
     public Character(int sW, int sH) {
         // create textures for character images
         characterImage = new Texture(Gdx.files.internal("charactar4-01.png"));
+        characterImageLeanRight = new Texture(Gdx.files.internal("charactar4-right.png"));
+        characterImageLeanLeft = new Texture(Gdx.files.internal("charactar4-left.png"));
         characterImagePoisoned = new Texture(Gdx.files.internal("charactar-02-poisoned.png"));
 
         // create a Rectangle to logically represent the charShape
@@ -55,6 +59,10 @@ public class Character {
     public void render(SpriteBatch batch) {
         if (powers.isPoisoned()) {
             batch.draw(characterImagePoisoned, charShape.x, charShape.y);
+        } else if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+            batch.draw(characterImageLeanLeft, charShape.x, charShape.y);
+        } else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+            batch.draw(characterImageLeanRight, charShape.x, charShape.y);
         }
         else batch.draw(characterImage, charShape.x, charShape.y);
     }
