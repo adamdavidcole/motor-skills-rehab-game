@@ -17,6 +17,9 @@ import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 
+/**
+ * GameScreen class renders the actual gameplay including the character, coins, and powerups
+ */
 public class GameScreen implements Screen {
     // Universal game state
     final GameState game;
@@ -31,13 +34,17 @@ public class GameScreen implements Screen {
     private Stage stage;
 
 
+    private long ONE_SEC_IN_NANO = 10000000;
+    /**
+     * Game screen constructor initializes game stage, soundtrack, and moving background
+     * @param gam
+     */
     public GameScreen(final GameState gam) {
         this.game = gam;
         stage = new Stage();
 
         Gdx.input.setInputProcessor(stage);
         soundtrack = new Soundtrack();
-
 
         // creates the button to go back to the main menu
         generateBackButton();
@@ -50,6 +57,10 @@ public class GameScreen implements Screen {
         lastTimeBg = TimeUtils.nanoTime();
     }
 
+    /**
+     * Renders the moving background, scoreboard, character, powrs, and coins
+     * @param delta
+     */
     @Override
     public void render(float delta) {
         // clear the screen with a dark blue color.
@@ -59,16 +70,14 @@ public class GameScreen implements Screen {
         // tell the camera to update its matrices.
         game.camera.update();
 
-
         // tell the SpriteBatch to render in the
         // coordinate system specified by the camera.
         game.batch.setProjectionMatrix(game.camera.combined);
 
-        // begin a new batch and draw the charShape and all coins, and scoreboard
+        // begin a new batch and draw the character, all coins, and scoreboard
         game.batch.begin();
         game.batch.draw(background, 0, currentBgY - game.GAME_WORLD_HEIGHT);
         game.batch.draw(background, 0, currentBgY);
-
         Scoreboard sb = Scoreboard.getInstance();
         sb.renderScoreboard(game, game.GAME_WORLD_HEIGHT);
         game.character.render(game.batch);
@@ -76,15 +85,15 @@ public class GameScreen implements Screen {
         game.powerPath.render(game.batch);
         game.batch.end();
 
-        // draw the button
+        // draw the back button
         stage.act(Gdx.graphics.getDeltaTime());
         stage.draw();
         stage.setDebugAll(false);
 
 
-        // move the background separator each 1s
-        if(TimeUtils.nanoTime() - lastTimeBg > 10000000){
-            // move the separator 1px
+        // move the moving background separator each second
+        if(TimeUtils.nanoTime() - lastTimeBg > ONE_SEC_IN_NANO){
+            // move the separator 1 unit
             currentBgY += 1;
             // set the current time to lastTimeBg
             lastTimeBg = TimeUtils.nanoTime();
