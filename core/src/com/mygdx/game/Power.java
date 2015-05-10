@@ -22,7 +22,7 @@ public abstract class Power {
     float multiplier;
 
 
-    // Constructor that sets initial position, width, height and posititon of power up/down
+    // Constructor that sets initial position, width, height and position of power up/down
     public Power() {
         power = new Rectangle();
         power.x = (int)(Math.random() * 800);

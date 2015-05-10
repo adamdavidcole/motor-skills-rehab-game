@@ -1,5 +1,7 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.utils.TimeUtils;
 
 import java.util.HashSet;
@@ -12,11 +14,13 @@ import java.util.Set;
  */
 public class PowerContainer {
     private Set<Power> powers;
+    private Sound rainbowSound;
 
 
     // constructor of power container
     public PowerContainer(int sW, int sH) {
         powers = new HashSet<Power>();
+        rainbowSound = Gdx.audio.newSound(Gdx.files.internal("rainbow.wav"));
     }
 
 
@@ -49,5 +53,10 @@ public class PowerContainer {
         powers.add(p);
         Scoreboard sb = Scoreboard.getInstance();
         sb.setMultiplier(sb.getMultiplier() * p.getMultiplier());
+
+        if (p instanceof Rainbow) {
+            rainbowSound.play();
+            CoinPath.addPotOfGold();
+        }
     }
 }

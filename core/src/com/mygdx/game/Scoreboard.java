@@ -42,6 +42,11 @@ public class Scoreboard {
         points += POINTS_PER_COIN*multiplier*GameState.difficultySetting;
     }
 
+    public void addPot() {
+        numCoins += 50;
+        points += 50*POINTS_PER_COIN*multiplier;
+    }
+
     // draws the scoreboard on the screen
     public void renderScoreboard(GameState game, int height) {
         float verticalPos = height - SB_VERTICAL_POS;

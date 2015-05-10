@@ -3,6 +3,7 @@ package com.mygdx.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -14,6 +15,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.TimeUtils;
+import com.badlogic.gdx.utils.Timer;
+
+import java.sql.Timestamp;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 
@@ -21,6 +25,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
  * GameScreen class renders the actual gameplay including the character, coins, and powerups
  */
 public class GameScreen implements Screen {
+
     // Universal game state
     final GameState game;
 
@@ -32,6 +37,11 @@ public class GameScreen implements Screen {
     // components of main game screen
     private Soundtrack soundtrack;
     private Stage stage;
+
+    private Boolean windActive = false;
+    private Boolean windBlowing = false;
+    private int windDuration = 0;
+    private Texture wAlert = new Texture(Gdx.files.internal("windAlert.png"));
 
 
     private long ONE_SEC_IN_NANO = 10000000;
@@ -51,14 +61,14 @@ public class GameScreen implements Screen {
 
         // instantiates background
         background = new Texture(Gdx.files.internal("cloudBGSmall.png"));
-        // curent position of background
+        // current position of background
         currentBgY = game.GAME_WORLD_HEIGHT;
         // last time background looped
         lastTimeBg = TimeUtils.nanoTime();
     }
 
     /**
-     * Renders the moving background, scoreboard, character, powrs, and coins
+     * Renders the moving background, scoreboard, character, powers, and coins
      * @param delta
      */
     @Override
@@ -79,16 +89,41 @@ public class GameScreen implements Screen {
         game.batch.draw(background, 0, currentBgY - game.GAME_WORLD_HEIGHT);
         game.batch.draw(background, 0, currentBgY);
         Scoreboard sb = Scoreboard.getInstance();
+
         sb.renderScoreboard(game, game.GAME_WORLD_HEIGHT);
         game.character.render(game.batch);
         game.cp.renderCoinPath(game.batch);
         game.powerPath.render(game.batch);
+        game.obstaclePath.render(game.batch);
+
+        ////////////////////////////////////////////////////////////////////////
+        //// WIND GRAPHICS - can't be done on thread or separately due to LibGDX
+        if (windActive) {
+            if (windBlowing) {
+                game.wind.render(game.batch);
+                // character is blown by the wind
+                game.character.shiftCharacter(-.3);
+            } else { // wind not blowing, but active - 3 options: alerting, entering, exiting
+                if (game.wind.exiting()){ // if exiting (the check updates the position)
+                   game.wind.render(game.batch);
+                } else if (game.wind.entering()){ // if entering (the check updates the position)
+                    game.wind.render(game.batch);
+                } else { // wind is alerting - about to enter
+                    game.batch.draw(wAlert, game.GAME_WORLD_WIDTH - wAlert.getWidth() - 50, game.GAME_WORLD_HEIGHT - wAlert.getHeight() - 80,
+                            wAlert.getWidth(), wAlert.getHeight());
+                }
+            }
+        }
+
         game.batch.end();
+
 
         // draw the back button
         stage.act(Gdx.graphics.getDeltaTime());
         stage.draw();
         stage.setDebugAll(false);
+
+
 
 
         // move the moving background separator each second
@@ -98,6 +133,42 @@ public class GameScreen implements Screen {
             // set the current time to lastTimeBg
             lastTimeBg = TimeUtils.nanoTime();
         }
+
+        ///////////////////////////////////////////////////////////
+        ///////////////// WIND SEGMENT
+        // Note: must be done in main render loop because of how libGDX works
+        if (!windActive) {
+            // .04% chance of spawning with enforced wait time in between spawns
+            windDuration = game.wind.update();
+            if (windDuration != 0) {
+                windActive = true;
+                System.out.println("Wind duration is "+windDuration);
+
+                final Sound windAlertBeep = Gdx.audio.newSound(Gdx.files.internal("windAlertBeep.wav"));
+
+                //create a timer to loop for 4s
+                final long id = windAlertBeep.loop();
+                Timer.schedule(new Timer.Task() {
+                    @Override
+                    public void run() {
+                        windAlertBeep.stop(id);
+                        windAlertBeep.dispose();
+                        // COMMENCE CLOUD COMING OUT NOW
+                        game.wind.enter();
+                    }
+                }, 4.0f); // run for 4 seconds
+
+                //create a timer to start wind in 7s (once wind is done entering)
+                Timer.schedule(new Timer.Task() {
+                    @Override
+                    public void run() {
+                        setWind(true);
+                    }
+                }, 7.0f); // run for 7 seconds
+
+            }
+        }
+
 
        // if the background seprator reaches the screen edge, move it back to the first position
         if(currentBgY > game.GAME_WORLD_HEIGHT){
@@ -177,6 +248,34 @@ public class GameScreen implements Screen {
                 game.setScreen(new MainMenu(game));
             }
         });
+    }
+
+    private void setWind(boolean blowing) {
+        System.out.println("setWind called: "+blowing);
+        if (blowing) {
+            game.wind.playSound();
+
+            // set timer for wind duration
+            Timer.schedule(new Timer.Task() {
+                @Override
+                public void run() {
+                    System.out.println("wind exiting");
+                    game.wind.windExit();
+                    setWind(false);
+                }
+            }, ((float)windDuration/1000.0f)); // 1000 milli seconds in a second
+        } else {
+            game.wind.stopSound();
+            // set a timer to dispose once done exiting
+            Timer.schedule(new Timer.Task() {
+                @Override
+                public void run() {
+                    windActive = false;
+                    game.wind.doneExiting();
+                }
+            }, 4.0f); // after 4 seconds
+        }
+        windBlowing = blowing;
     }
 
 }
