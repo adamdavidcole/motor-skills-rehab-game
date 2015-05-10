@@ -18,33 +18,18 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 public class MainMenu implements Screen {
 
     final GameState game;
-    private final FitViewport viewport;
     private Stage stage;
     private Texture background;
 
-    OrthographicCamera camera;
 
     public MainMenu(final GameState gam) {
         game = gam;
-        //camera = new OrthographicCamera();
-        //camera.setToOrtho(false, 800, 1280);
-        float w = Gdx.graphics.getWidth();
-        float h = Gdx.graphics.getHeight();
-        camera = new OrthographicCamera();
-        camera.setToOrtho(false, 800, 1200);
-        camera.translate(0,255);
-        viewport = new FitViewport(w, h, camera);
-
-        viewport.apply();
         //initializes menu screen items
         initialize();
-        background = new Texture(Gdx.files.internal("menuBG.png"));
+        background = new Texture(Gdx.files.internal("menuBG2.png"));
     }
 
     public void initialize(){
-        camera.update();
-        game.batch.setProjectionMatrix(camera.combined);
-
         //create the stage for buttons
         stage = new Stage();
         Gdx.input.setInputProcessor(stage);
@@ -120,7 +105,7 @@ public class MainMenu implements Screen {
     public void render(float delta) {
         Gdx.gl.glClearColor(.005f, .006f, .121f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
+        game.camera.update();
 
         game.batch.begin();
         game.batch.draw(background, 0, 0);
@@ -144,13 +129,10 @@ public class MainMenu implements Screen {
 
         @Override
     public void resize(int width, int height) {
-            viewport.update(width, height);
-            stage.getViewport().update(width, height); //Stage viewport
-        }
+    }
 
     @Override
     public void pause() {
-
     }
 
     @Override

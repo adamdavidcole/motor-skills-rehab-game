@@ -19,9 +19,8 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 
 public class GameScreen implements Screen {
     final GameState game;
-    private final FitViewport viewport;
+  //  private final FitViewport viewport;
     //    private Texture characterImage;
-    private OrthographicCamera camera;
     //private Rectangle charShape;
     public static int SCROLL_VELOCITY = 100;
 
@@ -34,8 +33,7 @@ public class GameScreen implements Screen {
     private Soundtrack soundtrack;
     private Stage stage;
 
-    private int height = 1280;
-    private int width = 800;
+
 
 
     public GameScreen(final GameState gam) {
@@ -58,14 +56,13 @@ public class GameScreen implements Screen {
         // create the camera and the SpriteBatch
        // camera = new OrthographicCamera(width, height);
         //camera.setToOrtho(false, width, height);
-        float w = Gdx.graphics.getWidth();
-        float h = Gdx.graphics.getHeight();
-        camera = new OrthographicCamera();
-        camera.setToOrtho(false, 800, 1200);
-        camera.translate(0,255);
-        viewport = new FitViewport(w, h, camera);
+//        float w = Gdx.graphics.getWidth();
+//        float h = Gdx.graphics.getHeight();
+//        camera = new OrthographicCamera(w,h);
+//        camera.setToOrtho(false, 800, 1280);
+//        viewport = new FitViewport(w, h, camera);
 
-        viewport.apply();
+    //    viewport.apply();
 
         // creates the button to go back to the main menu
         generateBackButton();
@@ -80,7 +77,7 @@ public class GameScreen implements Screen {
         background = new Texture(Gdx.files.internal("cloudBGSmall.png"));
 // the separator first appear at the position 800 (the edge of the screen, see
 // the camera above)
-        currentBgY = height;
+        currentBgY = game.GAME_WORLD_HEIGHT;
         // set lastTimeBg to current time
         lastTimeBg = TimeUtils.nanoTime();
 
@@ -98,20 +95,20 @@ public class GameScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         // tell the camera to update its matrices.
-        camera.update();
+        game.camera.update();
 
 
         // tell the SpriteBatch to render in the
         // coordinate system specified by the camera.
-        game.batch.setProjectionMatrix(camera.combined);
+        game.batch.setProjectionMatrix(game.camera.combined);
 
         // begin a new batch and draw the charShape and all coins, and scoreboard
         game.batch.begin();
-        game.batch.draw(background, 0, currentBgY - height);
+        game.batch.draw(background, 0, currentBgY - game.GAME_WORLD_HEIGHT);
         game.batch.draw(background, 0, currentBgY);
 
         Scoreboard sb = Scoreboard.getInstance();
-        sb.renderScoreboard(game, height);
+        sb.renderScoreboard(game, game.GAME_WORLD_HEIGHT);
         game.character.render(game.batch);
         game.cp.renderCoinPath(game.batch);
         game.powerPath.render(game.batch);
@@ -145,7 +142,7 @@ public class GameScreen implements Screen {
         }
 
 // if the seprator reaches the screen edge, move it back to the first position
-        if(currentBgY > height){
+        if(currentBgY > game.GAME_WORLD_HEIGHT){
             currentBgY = 0;
         }
     }
@@ -153,8 +150,8 @@ public class GameScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
-        viewport.update(width, height);
-        stage.getViewport().update(width, height); //Stage viewport
+        //viewport.update(width, height);
+        //stage.getViewport().update(width, height); //Stage viewport
     }
 
 

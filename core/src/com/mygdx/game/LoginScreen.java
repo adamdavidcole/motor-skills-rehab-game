@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -27,34 +28,52 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 public class LoginScreen implements Screen {
     private  FitViewport viewport;
     private GameState game;
-    private OrthographicCamera camera;
+    //private OrthographicCamera camera;
     private Texture background;
     private Stage stage;
     private Table table;
     private TextField inputField;
     private TextButton okButton;
+    private Sprite sprite;
+
+//    private int GAME_WORLD_WIDTH = 400;
+//    private int GAME_WORLD_HEIGHT = 640;
+//    private float aspectRatio = (float) Gdx.graphics.getWidth() / (float) Gdx.graphics.getHeight();
 
     public static String username;
 
     public LoginScreen(final GameState gam) {
         game = gam;
-        float w = Gdx.graphics.getWidth();
-        float h = Gdx.graphics.getHeight();
-        camera = new OrthographicCamera();
-        camera.setToOrtho(false, 800, 1200);
-        camera.translate(0,255);
-        viewport = new FitViewport(w, h, camera);
-        viewport.apply();
-        //camera.position.set(w / 4f, camera.viewportHeight / 2f, 0);
+        background = new Texture(Gdx.files.internal("menuBG2.png"));
+        sprite = new Sprite(background);
+        sprite.setSize(game.GAME_WORLD_WIDTH,game.GAME_WORLD_HEIGHT);
+
+//        float w = Gdx.graphics.getWidth();
+//        float h = Gdx.graphics.getHeight();
+//        camera = new OrthographicCamera(GAME_WORLD_HEIGHT * aspectRatio, GAME_WORLD_HEIGHT);
+//        camera.position.set(GAME_WORLD_WIDTH/2f,GAME_WORLD_HEIGHT/2f,0);
+
+        //camera.setToOrtho(false, w, h);
+        //camera.translate(0,0,0);
+        //camera.translate(0,215);
+//        System.out.println("camera: " + camera.viewportWidth + ", " + camera.viewportHeight);
+//        System.out.println("bg: " + background.getWidth() + ", " + background.getHeight());
+
+//        viewport = new FitViewport(w, h, camera);
+//        viewport.apply();
+//        System.out.println("camera: " + camera.viewportWidth + ", " + camera.viewportHeight);
+//        System.out.println("bg: " + background.getWidth() + ", " + background.getHeight());
+
+        //camera.position.set(camera.viewportWidth/2,camera.viewportHeight/2,0);
+
         //camera.update();
         //initializes menu screen items
         init();
-        background = new Texture(Gdx.files.internal("menuBG.png"));
     }
 
     private void init() {
-        camera.update();
-        game.batch.setProjectionMatrix(camera.combined);
+        game.camera.update();
+        game.batch.setProjectionMatrix(game.camera.combined);
 
         //create the stage for buttons
         stage = new Stage();
@@ -106,12 +125,14 @@ public class LoginScreen implements Screen {
     }
 
     public void render(float delta) {
+        game.camera.update();
         Gdx.gl.glClearColor(.005f, .006f, .121f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
         game.batch.begin();
-        game.batch.draw(background, 0, 0);
-
+        game.batch.setProjectionMatrix(game.camera.combined);
+        //game.batch.draw(sprite);
+        //game.batch.draw(background, 0, 0);
+        sprite.draw(game.batch);
         game.batch.end();
 
         //draw all items in table
@@ -134,8 +155,8 @@ public class LoginScreen implements Screen {
     }
     @Override
     public void resize(int width, int height) {
-        viewport.update(width, height);
-        stage.getViewport().update(width, height); //Stage viewport
+//        viewport.update(width, height);
+  //      stage.getViewport().update(width, height); //Stage viewport
     }
 
 

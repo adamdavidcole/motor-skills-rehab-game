@@ -1,12 +1,18 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import java.sql.Timestamp;
 
 public class GameState extends com.badlogic.gdx.Game {
+    public static OrthographicCamera camera;
+    public static int GAME_WORLD_WIDTH;
+    public static int GAME_WORLD_HEIGHT;
+//    private float aspectRatio = (float) Gdx.graphics.getWidth() / (float) Gdx.graphics.getHeight();
+
 
     public Character character;
     public OptimalPath opt;
@@ -36,16 +42,23 @@ public class GameState extends com.badlogic.gdx.Game {
     public void create() {
         System.out.println(Gdx.graphics.getWidth());
         System.out.println(Gdx.graphics.getHeight());
+        float w = Gdx.graphics.getWidth();
+        float h = Gdx.graphics.getHeight();
+        GAME_WORLD_WIDTH = 800;
+        GAME_WORLD_HEIGHT  = 850;
+        float aspectRatio =  w / h;
 
+        camera = new OrthographicCamera(GAME_WORLD_HEIGHT * aspectRatio, GAME_WORLD_HEIGHT);
+        camera.position.set(GAME_WORLD_WIDTH/2f,GAME_WORLD_HEIGHT/2f,0);
         // instantiate the dataFile
         // create a Rectangle to logically represent the charShape
-        character = new Character(width, height);
+        character = new Character(GAME_WORLD_WIDTH, GAME_WORLD_HEIGHT);
         // create the coin path
-        opt = new OptimalPath(width, height, dataFile);
+        opt = new OptimalPath(GAME_WORLD_WIDTH, GAME_WORLD_HEIGHT, dataFile);
         // create the optimal path
-        cp = new CoinPath(width, height, opt);
+        cp = new CoinPath(GAME_WORLD_WIDTH, GAME_WORLD_HEIGHT, opt);
         // create the power path
-        powerPath = new PowerPath(width, height);
+        powerPath = new PowerPath(GAME_WORLD_WIDTH, GAME_WORLD_HEIGHT);
 
 
 
@@ -72,6 +85,7 @@ public class GameState extends com.badlogic.gdx.Game {
     }
 
     public void render() {
+        camera.update();
         super.render(); //important!
         if (isRunning) update();
     }

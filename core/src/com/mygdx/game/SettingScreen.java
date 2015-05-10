@@ -30,21 +30,18 @@ public class SettingScreen implements Screen {
     private Skin skin;
 
 
-    OrthographicCamera camera;
 
     public SettingScreen(final GameState gam) {
         this.game = gam;
-        camera = new OrthographicCamera();
-        camera.setToOrtho(false, 800, 1280);
-        //initializes menu screen items
+
         initialize();
-        background = new Texture(Gdx.files.internal("menuBG.png"));
+        background = new Texture(Gdx.files.internal("menuBG2.png"));
 
     }
 
     public void initialize() {
-        camera.update();
-        game.batch.setProjectionMatrix(camera.combined);
+        game.camera.update();
+        game.batch.setProjectionMatrix(game.camera.combined);
 
         //create the stage for sliders
         stage = new Stage();
@@ -188,7 +185,7 @@ public class SettingScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(0, 0, 0.2f, 1);
+        Gdx.gl.glClearColor(.005f, .006f, .121f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 
