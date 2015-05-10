@@ -12,10 +12,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import java.util.Iterator;
 
 
-/*
- * Created by William Schiela on 4/14/15
+/**
+ * A class to handle the spawning of coins and all other coin-related functionality
  */
-// a class to handle the spawning of coins and all other coin-related functionality
 public class CoinPath {
     public static final int COIN_WIDTH = 40;
     public static final int COIN_HEIGHT = 40;
@@ -62,7 +61,7 @@ public class CoinPath {
             spawnCoin();
         }
         if (potOfGoldRectangle != null) {
-            potOfGoldRectangle.y += GameScreen.SCROLL_VELOCITY * Gdx.graphics.getDeltaTime();
+            potOfGoldRectangle.y += GameState.gameScrollSpeed * Gdx.graphics.getDeltaTime();
             if (potOfGoldRectangle.y > screenHeight) {
                 potOfGoldRectangle = null;
                 potOfGoldExists = false;
@@ -78,7 +77,7 @@ public class CoinPath {
         Iterator<Rectangle> iter = coins.iterator();
         while (iter.hasNext()) {
             Rectangle coin = iter.next();
-            coin.y += GameScreen.SCROLL_VELOCITY * Gdx.graphics.getDeltaTime();
+            coin.y += GameState.gameScrollSpeed * Gdx.graphics.getDeltaTime();
             if (coin.y > screenHeight)
                 iter.remove();
             if (coin.overlaps(charShape) && !character.isTransperent()) {

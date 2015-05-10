@@ -1,15 +1,22 @@
 package com.mygdx.game;
 
-/**
- * Created by William Schiela on 4/14/2015.
- */
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 
-//  a class to track game player data such as number of coins, points, and point multipliers
+/**
+ * A class to track game player data such as number of coins, points, and point multipliers
+ */
 public class Scoreboard {
     private static Scoreboard instance;
+    private BitmapFont font;
     private int points;
     private int numCoins;
     private float multiplier;
+    private float SB_LINE_HEIGHT = 22;
+    private float SB_HORIZONTAL_POS = 20;
+    private float SB_VERTICAL_POS = 20;
+
+
 
     private final int POINTS_PER_COIN = 10;
 
@@ -17,6 +24,9 @@ public class Scoreboard {
         points = 0;
         numCoins = 0;
         multiplier = 1;
+        font = new BitmapFont();
+        font.setColor(new Color(Color.BLACK));
+        font.setScale(1.5f);
     }
 
     public static Scoreboard getInstance() {
@@ -29,7 +39,7 @@ public class Scoreboard {
     // updates the number of coins collected and the number of points
     public void addCoin() {
         numCoins++;
-        points += POINTS_PER_COIN*multiplier;
+        points += POINTS_PER_COIN*multiplier*GameState.difficultySetting;
     }
 
     public void addPot() {
@@ -38,10 +48,12 @@ public class Scoreboard {
     }
 
     // draws the scoreboard on the screen
-    public void renderScoreboard(MyGdxGame game, int height) {
-        game.font.draw(game.batch, "Coins Collected: " + numCoins, 0, height);
-        game.font.draw(game.batch, "Points: " + points, 0, height-15);
-        game.font.draw(game.batch, "Multiplier = X" + multiplier, 0, height - 30);
+    public void renderScoreboard(GameState game, int height) {
+        float verticalPos = height - SB_VERTICAL_POS;
+        font.draw(game.batch, "Coins Collected: " + numCoins, SB_HORIZONTAL_POS, verticalPos);
+        font.draw(game.batch, "Points: " + points, SB_HORIZONTAL_POS, verticalPos-SB_LINE_HEIGHT);
+        font.draw(game.batch, "Multiplier = X" + multiplier, SB_HORIZONTAL_POS,
+                verticalPos - 2 * SB_LINE_HEIGHT);
 
     }
 

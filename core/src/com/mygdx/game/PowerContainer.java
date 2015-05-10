@@ -9,7 +9,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 /**
- *C This class holds the "powers" of the character.
+ * This class holds the "powers" of the character.
  * It is dependent on the "character" class for functionality"
  */
 public class PowerContainer {

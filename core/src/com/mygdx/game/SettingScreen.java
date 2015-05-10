@@ -21,7 +21,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
  * Created by Anthony on 5/4/2015.
  */
 public class SettingScreen implements Screen {
-    final MyGdxGame game;
+    final GameState game;
     private Label diffSliderLabel;
     private Label timeSliderLabel;
     private Label rangeSliderLabel;
@@ -30,21 +30,17 @@ public class SettingScreen implements Screen {
     private Skin skin;
 
 
-    OrthographicCamera camera;
-
-    public SettingScreen(final MyGdxGame gam) {
+    public SettingScreen(final GameState gam) {
         this.game = gam;
-        camera = new OrthographicCamera();
-        camera.setToOrtho(false, 800, 1280);
-        //initializes menu screen items
+
         initialize();
-        background = new Texture(Gdx.files.internal("menuBG.png"));
+        background = new Texture(Gdx.files.internal("menuBG2.png"));
 
     }
 
     public void initialize() {
-        camera.update();
-        game.batch.setProjectionMatrix(camera.combined);
+        game.camera.update();
+        game.batch.setProjectionMatrix(game.camera.combined);
 
         //create the stage for sliders
         stage = new Stage();
@@ -55,9 +51,6 @@ public class SettingScreen implements Screen {
         //create the table for the sliders
         Table sliderTable = new Table();
         sliderTable.setFillParent(true);
-
-
-
 
         //create diffSlider
         diffSliderLabel = new Label("Difficulty: Very Easy", skin);
@@ -100,6 +93,8 @@ public class SettingScreen implements Screen {
         diffSlider.addListener(new ChangeListener() {
             public void changed(ChangeEvent event, Actor actor) {
                 int value = (int)((Slider) actor).getValue();
+                GameState.difficultySetting = value;
+                game.gameScrollSpeed = 100 * value;
                 updateDiffSliderLabel(value);
             }
         });
@@ -108,6 +103,7 @@ public class SettingScreen implements Screen {
         timeSlider.addListener(new ChangeListener() {
             public void changed(ChangeEvent event, Actor actor) {
                 int value = (int)((Slider) actor).getValue();
+                GameState.gameDurationSetting = value;
                 updateTimeSliderLabel(value);
             }
         });
@@ -116,6 +112,7 @@ public class SettingScreen implements Screen {
         rangeSlider.addListener(new ChangeListener() {
             public void changed(ChangeEvent event, Actor actor) {
                 int value = (int)((Slider) actor).getValue();
+                GameState.rangeOfMotionSetting = value;
                 updateRangeSliderLabel(value);
             }
         });
@@ -174,13 +171,8 @@ public class SettingScreen implements Screen {
     }
 
     @Override
-    public void show() {
-
-    }
-
-    @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(0, 0, 0.2f, 1);
+        Gdx.gl.glClearColor(.005f, .006f, .121f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 
@@ -191,31 +183,31 @@ public class SettingScreen implements Screen {
         //draw all items in buttonTable
         stage.act(Gdx.graphics.getDeltaTime());
         stage.draw();
-        stage.setDebugAll(true);
+        stage.setDebugAll(false);
 
     }
+
+    @Override
+    public void show() {
+    }
+
     @Override
     public void resize(int width, int height) {
-
     }
 
     @Override
     public void pause() {
-
     }
 
     @Override
     public void resume() {
-
     }
 
     @Override
     public void hide() {
-
     }
 
     @Override
     public void dispose() {
-
     }
 }

@@ -10,12 +10,8 @@ import com.badlogic.gdx.utils.TimeUtils;
 /**
  * This is an abstract super class for a "power" up or down. The class exposes a render
  * function as well as functions to get the "power height, width, and position.
- *
  */
 
-/**
- * Created by acole9 on 4/15/15.
- */
 public abstract class Power {
     Texture texture;            // image of power
     Rectangle power;            // physical representation of power
@@ -26,7 +22,7 @@ public abstract class Power {
     float multiplier;
 
 
-    // Constructor that sets initial position, width, height and posititon of power up/down
+    // Constructor that sets initial position, width, height and position of power up/down
     public Power() {
         power = new Rectangle();
         power.x = (int)(Math.random() * 800);

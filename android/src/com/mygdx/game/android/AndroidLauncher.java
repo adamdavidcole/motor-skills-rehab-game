@@ -5,7 +5,7 @@ import android.util.Log;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
-import com.mygdx.game.MyGdxGame;
+import com.mygdx.game.GameState;
 
 public class AndroidLauncher extends AndroidApplication {
 	@Override
@@ -15,6 +15,6 @@ public class AndroidLauncher extends AndroidApplication {
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
         config.useAccelerometer = false;
         config.useCompass = false;
-        initialize(new MyGdxGame(), config);
+        initialize(new GameState(), config);
 	}
 }

@@ -12,29 +12,33 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 
-
+/**
+ * Generates the main menu screen with options to quit, change settings, and play game
+ */
 public class MainMenu implements Screen {
 
-    final MyGdxGame game;
+    final GameState game;
     private Stage stage;
     private Texture background;
 
-    OrthographicCamera camera;
 
-    public MainMenu(final MyGdxGame gam) {
+    /**
+     * Constructor for main menu screen that initializes menu buttons and background
+     * @param gam
+     */
+    public MainMenu(final GameState gam) {
         game = gam;
-        camera = new OrthographicCamera();
-        camera.setToOrtho(false, 800, 1280);
         //initializes menu screen items
         initialize();
-        background = new Texture(Gdx.files.internal("menuBG.png"));
+        background = new Texture(Gdx.files.internal("menuBG2.png"));
     }
 
+    /**
+     * Initializes main menu buttons table including PLAY, SETTINGS, and QUIT buttons.
+     */
     public void initialize(){
-        camera.update();
-        game.batch.setProjectionMatrix(camera.combined);
-
         //create the stage for buttons
         stage = new Stage();
         Gdx.input.setInputProcessor(stage);
@@ -73,6 +77,7 @@ public class MainMenu implements Screen {
             public void changed (ChangeEvent event, Actor actor) {
                 System.out.println("CLICKED");
                 //move to gameplay screen
+               // game.instantiateDataFile();
                 game.setScreen(new GameScreen(game));
             }
         });
@@ -100,55 +105,48 @@ public class MainMenu implements Screen {
 
     }
 
-    @Override
-    public void show() {
 
-    }
-
+    /**
+     * Renders menu screen with background and main menu buttons
+     * @param delta
+     */
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(0, 0, 0.2f, 1);
+        Gdx.gl.glClearColor(.005f, .006f, .121f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        game.camera.update();
 
-
+        // draw background
         game.batch.begin();
         game.batch.draw(background, 0, 0);
-
-        /*game.font.draw(game.batch,"Welcome to Irish Frenzy!!! ",100,150);
-        game.font.draw(game.batch,"Tap anywhere to begin!",100,100);*/
         game.batch.end();
-        //draw all items in buttonTable
 
+
+        //draw all items in buttonTable
         stage.act(Gdx.graphics.getDeltaTime());
         stage.draw();
         stage.setDebugAll(false);
+     }
 
-            /*if(Gdx.input.isTouched())
+    @Override
+    public void show() {
+    }
 
-            {
-                game.setScreen(new GameScreen(game));
-                dispose();
-            }*/
-        }
 
-        @Override
+    @Override
     public void resize(int width, int height) {
-
     }
 
     @Override
     public void pause() {
-
     }
 
     @Override
     public void resume() {
-
     }
 
     @Override
     public void hide() {
-
     }
 
     @Override

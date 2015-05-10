@@ -10,12 +10,10 @@ import java.awt.Point;
 import java.util.Iterator;
 
 /**
- * Created by William Schiela on 4/15/2015.
+ * A class to represent the optimal path along which coins spawn
+ * the optimal path is a sinusoid centered on the screen with a randomly varying amplitude every
+ * half-period
  */
-
-// a class to represent the optimal path along which coins spawn
-// the optimal path is a sinusoid centered on the screen with a randomly varying amplitude every
-// half-period
 public class OptimalPath {
     // width and height of the screen on which the path exists
     private int screenWidth;
@@ -36,7 +34,8 @@ public class OptimalPath {
     private int maxXRange;
     private int minXRange;
 
-    private DataFile dataFile;
+    public DataFile dataFile;
+
 
     public OptimalPath(int sW, int sH, DataFile df) {
         screenWidth = sW;
@@ -93,7 +92,7 @@ public class OptimalPath {
         Iterator<Point> iter = refPoints.iterator();
         while (iter.hasNext()) {
             Point rp = iter.next();
-            rp.y += GameScreen.SCROLL_VELOCITY * Gdx.graphics.getDeltaTime();
+            rp.y += GameState.gameScrollSpeed * Gdx.graphics.getDeltaTime();
             if (rp.y >= charShape.y) {
                 float charMiddle = charShape.x + charShape.getWidth()/2;
                 writeToCSV(rp.x, charMiddle);
@@ -124,7 +123,7 @@ public class OptimalPath {
 
     // writes the optimal and actual positions of the character as reference points pass the character
     private void writeToCSV(float optimal, float actual) {
-        dataFile.write(optimal, actual);
+        GameState.dataFile.write(optimal, actual);
     }
 
 }

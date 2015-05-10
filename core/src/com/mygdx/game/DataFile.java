@@ -6,17 +6,17 @@ import java.io.IOException;
 
 /**
  * Created by William Schiela on 4/25/2015.
- */
-// a class to handle opening, writing to, and closing the .csv file
-// the data file is saved in the android/assets folder and has the following format:
-//
-// Date and Time:, <current timestamp>
-// Player, <player name given at login>
+ * a class to handle opening, writing to, and closing the .csv file
+ * the data file is saved in the android/assets folder and has the following format:
 
-// Optimal Path, Actual Path
-// <optimal value 1>, <actual value 1>
-// <optimal value 2>, <actual value 2>
-// ...etc
+ * Date and Time:, <current timestamp>
+ * Player, <player name given at login>
+
+ * Optimal Path, Actual Path
+ * <optimal value 1>, <actual value 1>
+ * <optimal value 2>, <actual value 2>
+ * ...etc
+ */
 public class DataFile {
     BufferedWriter bw;
 
