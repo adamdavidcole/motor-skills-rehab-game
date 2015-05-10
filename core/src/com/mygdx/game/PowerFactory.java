@@ -7,7 +7,7 @@ public class PowerFactory {
     public static Power createPower() {
         double rand = Math.random();
         if (rand <= 0.4) {
-            return new Rainbow();
+            return new PoisonBottle();
         }
         else if (rand <= 0.8) {
             return new Times2Multiplier();
