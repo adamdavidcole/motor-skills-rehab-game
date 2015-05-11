@@ -2,9 +2,8 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -14,13 +13,14 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.TimeUtils;
-import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.Timer;
 
 
 /**
  * GameScreen class renders the actual gameplay including the character, coins, and powerups
  */
 public class GameScreen implements Screen {
+
     // Universal game state
     final GameState game;
 
@@ -41,7 +41,7 @@ public class GameScreen implements Screen {
      */
     public GameScreen(final GameState gam) {
         this.game = gam;
-        stage = new Stage();
+
 
         Gdx.input.setInputProcessor(stage);
         soundtrack = new Soundtrack();
@@ -51,14 +51,14 @@ public class GameScreen implements Screen {
 
         // instantiates background
         background = new Texture(Gdx.files.internal("cloudBGSmall.png"));
-        // curent position of background
+        // current position of background
         currentBgY = game.GAME_WORLD_HEIGHT;
         // last time background looped
         lastTimeBg = TimeUtils.nanoTime();
     }
 
     /**
-     * Renders the moving background, scoreboard, character, powrs, and coins
+     * Renders the moving background, scoreboard, character, powers, and coins
      * @param delta
      */
     @Override
@@ -79,11 +79,21 @@ public class GameScreen implements Screen {
         game.batch.draw(background, 0, currentBgY - game.GAME_WORLD_HEIGHT);
         game.batch.draw(background, 0, currentBgY);
         Scoreboard sb = Scoreboard.getInstance();
+
         sb.renderScoreboard(game, game.GAME_WORLD_HEIGHT);
         game.character.render(game.batch);
         game.cp.renderCoinPath(game.batch);
         game.powerPath.render(game.batch);
+        game.obstaclePath.render(game.batch);
+
+        ////////////////////////////////////////////////////////////////////////
+        //// WIND GRAPHICS (cannot be done outside of class due to how libGDX works)
+        if (game.wind.windActive) {
+            renderWind();
+        }
+
         game.batch.end();
+
 
         // draw the back button
         stage.act(Gdx.graphics.getDeltaTime());
@@ -99,7 +109,12 @@ public class GameScreen implements Screen {
             lastTimeBg = TimeUtils.nanoTime();
         }
 
-       // if the background seprator reaches the screen edge, move it back to the first position
+        if (!game.wind.windActive) {
+            loadWind();
+        }
+
+
+       // if the background separator reaches the screen edge, move it back to the first position
         if(currentBgY > game.GAME_WORLD_HEIGHT){
             currentBgY = 0;
         }
@@ -110,6 +125,55 @@ public class GameScreen implements Screen {
     public void resize(int width, int height) {
     }
 
+    private void loadWind(){
+        // 4% chance of spawning with enforced wait time in between spawns
+        game.wind.windDuration = game.wind.update();
+        if (game.wind.windDuration != 0) {
+            game.wind.windActive = true;
+            System.out.println("Wind duration is "+game.wind.windDuration);
+            game.wind.prepare();
+
+            final Sound windAlertBeep = Gdx.audio.newSound(Gdx.files.internal("windAlertBeep.wav"));
+
+            //create a timer to loop for 4s
+            final long id = windAlertBeep.loop();
+            Timer.schedule(new Timer.Task() {
+                @Override
+                public void run() {
+                    windAlertBeep.stop(id);
+                    windAlertBeep.dispose();
+                    // COMMENCE CLOUD COMING OUT NOW
+                    game.wind.enter();
+                }
+            }, 4.0f); // run for 4 seconds
+
+            //create a timer to start wind in 7s (once wind is done entering)
+            Timer.schedule(new Timer.Task() {
+                @Override
+                public void run() {
+                    setWind(true);
+                }
+            }, 7.0f); // run for 7 seconds
+
+        }
+    }
+
+    private void renderWind(){
+        if (game.wind.windBlowing) {
+            game.wind.render(game.batch);
+            // character is blown by the wind
+            game.character.shiftCharacter(game.wind.shiftAmount());
+        } else { // wind not blowing, but active - 3 options: alerting, entering, exiting
+            if (game.wind.exiting()){ // if exiting (the check updates the position)
+                game.wind.render(game.batch);
+            } else if (game.wind.entering()){ // if entering (the check updates the position)
+                game.wind.render(game.batch);
+            } else { // wind is alerting - about to enter
+                game.batch.draw(game.wind.wAlert, game.wind.windAlertLocWidth(), game.wind.windAlertLocHeight(),
+                        game.wind.wAlert.getWidth(), game.wind.wAlert.getHeight());
+            }
+        }
+    }
 
     /**
      * Begin game, music, and game clock when this screen is shown
@@ -164,12 +228,13 @@ public class GameScreen implements Screen {
         buttonStyle.font = game.font;
         buttonStyle.up = new TextureRegionDrawable(new TextureRegion(buttonTexture));
 
-        //create quit button
+        //create back button
         TextButton backButton = new TextButton("BACK", buttonStyle);
         buttonTable.add(backButton);
+        buttonTable.top().right().padRight(50);
         stage.addActor(buttonTable);
 
-        //add a listener for the quit button
+        //add a listener for the back button
         backButton.addListener(new ChangeListener() {
             @Override
             public void changed (ChangeEvent event, Actor actor) {
@@ -177,6 +242,32 @@ public class GameScreen implements Screen {
                 game.setScreen(new MainMenu(game));
             }
         });
+    }
+
+    private void setWind(boolean blowing) {
+        if (blowing) {
+            game.wind.playSound();
+
+            // set timer for wind duration
+            Timer.schedule(new Timer.Task() {
+                @Override
+                public void run() {
+                    game.wind.windExit();
+                    setWind(false);
+                }
+            }, ((float)game.wind.windDuration/1000.0f)); // 1000 milli seconds in a second
+        } else {
+            game.wind.stopSound();
+            // set a timer to dispose once done exiting
+            Timer.schedule(new Timer.Task() {
+                @Override
+                public void run() {
+                    game.wind.windActive = false;
+                    game.wind.doneExiting();
+                }
+            }, 15.0f); // after 15 seconds; cooldown
+        }
+        game.wind.windBlowing = blowing;
     }
 
 }

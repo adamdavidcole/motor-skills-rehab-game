@@ -9,8 +9,11 @@ public class PowerFactory {
         if (rand <= GameState.difficultySetting/6.0) {
             return new PoisonBottle();
         }
-        else {
+        else if (rand <= 0.8) {
             return new Times2Multiplier();
+        }
+        else {
+            return new Rainbow();
         }
     }
 }

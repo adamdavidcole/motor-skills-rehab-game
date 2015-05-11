@@ -21,7 +21,9 @@ public class GameState extends com.badlogic.gdx.Game {
     public Character character;
     public OptimalPath opt;
     public CoinPath cp;
+    public ObstaclePath obstaclePath;
     public PowerPath powerPath;
+    public Wind wind;
     public static DataFile dataFile;
 
     // render game components
@@ -59,7 +61,8 @@ public class GameState extends com.badlogic.gdx.Game {
         opt = new OptimalPath(GAME_WORLD_WIDTH, GAME_WORLD_HEIGHT, dataFile);
         cp = new CoinPath(GAME_WORLD_WIDTH, GAME_WORLD_HEIGHT, opt);
         powerPath = new PowerPath(GAME_WORLD_WIDTH, GAME_WORLD_HEIGHT);
-
+        obstaclePath = new ObstaclePath(GAME_WORLD_WIDTH, GAME_WORLD_HEIGHT);
+        wind = new Wind(GAME_WORLD_WIDTH, GAME_WORLD_HEIGHT);
 
         // instantiate the render components of the game
         batch = new SpriteBatch();
@@ -111,6 +114,7 @@ public class GameState extends com.badlogic.gdx.Game {
         updateCoinPathsPos();   // update coin paths
         character.update();     // update state of character
         powerPath.update(character); // update power path
+        obstaclePath.update(character);
         gameScrollSpeed += .001; // increment the game speed
 
         // end game if it exceeds the duration set in settings
@@ -121,7 +125,7 @@ public class GameState extends com.badlogic.gdx.Game {
      * Updates the position of the coin path and the optimal path
      */
     private void updateCoinPathsPos() {
-        cp.updateCoinPath(character.charShape);
+        cp.updateCoinPath(character.charShape, character);
         opt.updateOptimalPath(character.charShape);
         opt.updateRangeOfMotion(character.getX());
         long timeGameHasBeenRunning = (System.currentTimeMillis() - startTime);
@@ -136,7 +140,7 @@ public class GameState extends com.badlogic.gdx.Game {
         long timeGameHasBeenRunning = (System.currentTimeMillis() - startTime);
         if (timeGameHasBeenRunning > gameDurationSetting * 1000 * 60){
             dataFile.close();
-            this.setScreen(new MainMenu(this));
+            this.setScreen(new GameEndScreen(this));
         }
     }
 

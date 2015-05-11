@@ -15,6 +15,7 @@ import java.util.List;
  * This class models the game character and handles movement, collisions and rendering
  */
 public class Character {
+
     private Texture characterImage;          // image of character
     private Texture characterImageLeanRight;          // image of character tilted right
     private Texture characterImageLeanLeft;          // image of character tilted left
@@ -25,6 +26,9 @@ public class Character {
     private float CHARACTER_SCALE_FACTOR = 0.35f; // scale factor for character images
     private int VERTICAL_POS_OFFSET = 75;         // space above character and below top of screen
     private int MAX_RANGE_OF_MOTION = 5;          // maximum range of motion setting
+
+    private boolean transperent = false;      // whether character can collect
+    private int collisionCounter;             // tracks how long character should remain transparent
 
     /**
      * Character constructor creates character textures, shapes, and power container
@@ -52,13 +56,34 @@ public class Character {
         powers = new PowerContainer(sW, sH);
     }
 
+    public void collision(){
+        collisionCounter = 300;
+        transperent = true;
+    }
+
+    public boolean isTransperent(){
+        return transperent;
+    }
+
+
     /**
      * Render appropriate image for character depending on state. Image shifts left and right
      * if arrow keys pressed to mimick falling air balloon effect.
      * @param batch
      */
+
     public void render(SpriteBatch batch) {
-        // draw the correct image based on the state of the character and inputs
+
+        if (collisionCounter > 0){
+           collisionCounter--;
+            if (collisionCounter%10 != 0) {
+                return;
+            }
+        } else {
+            transperent = false;
+        }
+
+
         if (powers.isPoisoned()) {
             batch.draw(characterImagePoisoned, charShape.x, charShape.y);
         } else if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
@@ -85,9 +110,9 @@ public class Character {
 
     /**
      * Shift character's position x spots relative to current position. Amount shifted
-     * is dependedent on user's range of motion.
+     * is dependent on user's range of motion.
      */
-    private void shiftCharacter(int x) {
+    public void shiftCharacter(double x) {
         // velocity of character is calculated using range of motion
         int shiftVelocity = MAX_RANGE_OF_MOTION - GameState.rangeOfMotionSetting;
         // Shift character horizontally according to velocity
