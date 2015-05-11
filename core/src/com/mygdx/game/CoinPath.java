@@ -26,6 +26,8 @@ public class CoinPath {
     private Texture coinImage;
     private Sound coinSound;
 
+    // media files associate with the pot of gold
+    private Sound potSound;
     private Texture potOfGoldImage;
     private Rectangle potOfGoldRectangle = null;
     private static boolean potOfGoldExists = false;
@@ -48,6 +50,7 @@ public class CoinPath {
 
         coinSound = Gdx.audio.newSound(Gdx.files.internal("coinCollectSound2.wav"));
         potOfGoldImage = new Texture(Gdx.files.internal("potOfGold.png"));
+        potSound = Gdx.audio.newSound(Gdx.files.internal("rainbow.wav"));
 
         // spawn the first coin
         spawnCoin();
@@ -68,7 +71,7 @@ public class CoinPath {
             } else if (potOfGoldRectangle.overlaps(charShape) && !character.isTransperent()) {
                 Scoreboard sb = Scoreboard.getInstance();
                 sb.addPot();
-                coinSound.play();
+                potSound.play();
                 potOfGoldRectangle = null;
                 potOfGoldExists = false;
             }
@@ -110,9 +113,9 @@ public class CoinPath {
             if (potOfGoldRectangle == null) {
                 Rectangle pot = new Rectangle();
                 pot.x = MathUtils.random(0, (screenWidth - 50));
-                pot.y = -75;
-                pot.width = 80;
-                pot.height = 75;
+                pot.y = -85;
+                pot.width = 90;
+                pot.height = 85;
                 potOfGoldRectangle = pot;
             }
             batch.draw(potOfGoldImage, potOfGoldRectangle.x, potOfGoldRectangle.y, potOfGoldRectangle.width, potOfGoldRectangle.height);

@@ -25,7 +25,7 @@ public abstract class Power {
     // Constructor that sets initial position, width, height and position of power up/down
     public Power() {
         power = new Rectangle();
-        power.x = (int)(Math.random() * 800);
+        power.x = (int)(Math.random() * 750);
         //power.y = -height;
         draw = true;
         timeSpawned = TimeUtils.millis();

@@ -8,7 +8,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.TimeUtils;
 
 /**
- * Created by gabriel on 4/23/15.
+ * A class that keeps track of all the wind graphics and entering/
  */
 public class Wind {
 
@@ -25,11 +25,12 @@ public class Wind {
     private boolean draw;
     private long lastTimeSpawned;       // last time spawned
     private double strength = 5000;   // adjusted based off game difficulty
-    private int numberOfStepsToEnter = 0;
-    private int numberOfStepsToExit = 0;
-    private int startingX;
-    private boolean onRight = false;
+    private int numberOfStepsToEnter = 0; // counter to keep track of wind entering
+    private int numberOfStepsToExit = 0;  // counter ot keep track of wind exiting
+    private int startingX;                  // starting location for wind on right
+    private boolean onRight = false; // whether wind is on left or right
 
+    // Constructor to create a wind object
     public Wind(int screenWidth, int screenHeight) {
         startingX = screenWidth;
         width = (int)(.3*texture.getWidth());
@@ -45,6 +46,7 @@ public class Wind {
 
     }
 
+    // called in GameScreen to show where the alert should display (on left or right)
     public int windAlertLocWidth() {
         if (onRight) {
             return GameState.GAME_WORLD_WIDTH - wAlert.getWidth() - 50;
@@ -53,6 +55,7 @@ public class Wind {
         }
     }
 
+    // called in GameScreen to show where the alert should display
     public int windAlertLocHeight() {
         return GameState.GAME_WORLD_HEIGHT - wAlert.getHeight() - 80;
     }
@@ -80,6 +83,7 @@ public class Wind {
         }
     }
 
+    // determines if cloud is coming on left or right and resets some values to prepare
     public void prepare() {
         if (Math.random() <= .5) { // comes from right
             wind.x = startingX;
@@ -94,7 +98,7 @@ public class Wind {
         }
     }
 
-    // prepares the cloud to enter
+    // starts the cloud entering process by setting a numberOfStepsToEnter
     public void enter() {
         // reset values
         numberOfStepsToEnter = 12000;
@@ -129,6 +133,7 @@ public class Wind {
         }
     }
 
+    // returns how long wind will blow for
     public int update() {
         if (TimeUtils.millis() - lastTimeSpawned > 15000 && Math.random() > .996) {
             // update Time
@@ -138,7 +143,7 @@ public class Wind {
         return 0;
     }
 
-
+    // starts playing the wind sound effect
     public void playSound() {
         if (onRight) {
             // set blowing texture
@@ -151,6 +156,7 @@ public class Wind {
         windSound.play();
     }
 
+    // stops playing the wind sound effect
     public void stopSound() {
         if (onRight) {
             // set retreating texture
@@ -171,6 +177,7 @@ public class Wind {
 
     }
 
+    // returns the amount the character should be pushed by wind (1 and -1 represent normal character movement)
     public double shiftAmount(){
         if (onRight) {
             return -.3;
@@ -178,9 +185,11 @@ public class Wind {
         return .3;
     }
 
+    // removes media files for memory
     public void dispose() {
         draw = false;
         texture.dispose();
+        windSound.dispose();
     }
 
     public long getTimeSpawned() {
