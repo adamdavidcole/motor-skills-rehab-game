@@ -87,6 +87,23 @@ public class Scoreboard {
         multiplierLabel.setText("Multiplier = X" + multiplier);
     }
 
+
+    /**
+     * Render scoreboard using bitfonts in game screen
+     */
+    public void renderGameScreenScoreboard(GameState game, int height) {
+        float SB_LINE_HEIGHT = 22;
+        float SB_HORIZONTAL_POS = 20;
+        float SB_VERTICAL_POS = 20;
+
+        float verticalPos = height - SB_VERTICAL_POS;
+        font.draw(game.batch, "Coins Collected: " + numCoins, SB_HORIZONTAL_POS, verticalPos);
+        font.draw(game.batch, "Points: " + points, SB_HORIZONTAL_POS, verticalPos-SB_LINE_HEIGHT);
+        font.draw(game.batch, "Multiplier = X" + multiplier, SB_HORIZONTAL_POS,
+                verticalPos - 2 * SB_LINE_HEIGHT);
+
+    }
+
     /**
      * Scoreboard rendered in the final game over screen
      */

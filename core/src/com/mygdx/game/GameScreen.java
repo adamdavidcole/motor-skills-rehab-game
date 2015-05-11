@@ -55,7 +55,7 @@ public class GameScreen implements Screen {
 
         // creates the button to go back to the main menu and the scoreboard
         stage = new Stage();
-        Scoreboard.getInstance().addScoreboardToStage(stage);
+      //  Scoreboard.getInstance().addScoreboardToStage(stage);
         generateBackButton();
 
         // instantiates background
@@ -87,18 +87,20 @@ public class GameScreen implements Screen {
         // coordinate system specified by the camera.
         game.batch.setProjectionMatrix(game.camera.combined);
 
+        // Add background behind all other object
         game.batch.begin();
         game.batch.draw(background, 0, currentBgY - game.GAME_WORLD_HEIGHT);
         game.batch.draw(background, 0, currentBgY);
         game.batch.end();
 
-        // draw the back button and scoreboard
+        // draw the back button
         stage.act(Gdx.graphics.getDeltaTime());
         stage.draw();
         stage.setDebugAll(false);
 
         // begin a new batch and draw the character, all coins, and scoreboard
         game.batch.begin();
+        Scoreboard.getInstance().renderGameScreenScoreboard(game, game.GAME_WORLD_HEIGHT);
         game.character.render(game.batch);
         game.cp.renderCoinPath(game.batch);
         game.powerPath.render(game.batch);
