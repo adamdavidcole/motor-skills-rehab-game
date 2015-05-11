@@ -16,6 +16,8 @@ public class Cannonball extends Obstacle {
 
     public Cannonball() {
         texture = new Texture(Gdx.files.internal("cannonball.png"));
+        spawnSound = Gdx.audio.newSound(Gdx.files.internal("cannon_shot.wav"));
+        collisionSound = Gdx.audio.newSound(Gdx.files.internal("cannon_hit_sound.wav"));
         super.initTexture(texture, 1);
     }
 

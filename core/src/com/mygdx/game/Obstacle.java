@@ -1,5 +1,6 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
@@ -12,6 +13,8 @@ public abstract class Obstacle {
     int height;                 // height of obstacle
     boolean draw;
     long timeSpawned;           // last time spawned
+    Sound spawnSound;
+    Sound collisionSound;
 
 
     // Constructor that sets initial position, width, height and position of obstacle

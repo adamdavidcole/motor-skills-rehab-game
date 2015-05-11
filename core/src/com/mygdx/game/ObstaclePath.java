@@ -33,31 +33,35 @@ public class ObstaclePath {
         // update state of obstacles
         Iterator<Obstacle> iter = obstaclePath.iterator();
         while (iter.hasNext()) {
-            Obstacle p = iter.next();
+            Obstacle obstacle = iter.next();
             // if obstacle is above screen, remove
-            if (p.getY() > screenHeight) {
+            if (obstacle.getY() > screenHeight) {
                 iter.remove();
-                p.dispose();
+                obstacle.dispose();
             }
             // if obstacle overlaps with character, hit character
-            else if (p.getRectangle().overlaps(character.charShape) && !character.isTransperent()) {
+            else if (obstacle.getRectangle().overlaps(character.charShape)
+                    && !character.isTransperent()) {
+                if (obstacle.collisionSound != null) obstacle.collisionSound.play();
                 iter.remove();
                 character.collision();
             }
             // else update obstacle
-            else p.update();
+            else obstacle.update();
         }
     }
 
     private void spawnObstacle() {
-        obstaclePath.add(ObstacleFactory.createObstacle());
+        Obstacle obstacle = ObstacleFactory.createObstacle();
+        if (obstacle.spawnSound != null) obstacle.spawnSound.play();
+        obstaclePath.add(obstacle);
         lastObstacleSpawn = TimeUtils.millis();
     }
 
 
     public void render(SpriteBatch batch) {
-        for (Obstacle p : obstaclePath) {
-            p.render(batch);
+        for (Obstacle obstacle : obstaclePath) {
+            obstacle.render(batch);
         }
     }
 
