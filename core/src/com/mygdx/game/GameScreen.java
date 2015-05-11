@@ -42,7 +42,6 @@ public class GameScreen implements Screen {
     private BitmapFont countdownFont;
 
 
-
     /**
      * Game screen constructor initializes game stage, soundtrack, and moving background
      * @param gam
@@ -54,11 +53,9 @@ public class GameScreen implements Screen {
         Gdx.input.setInputProcessor(stage);
         soundtrack = new Soundtrack();
 
-        // creates the button to go back to the main menu
+        // creates the button to go back to the main menu and the scoreboard
         stage = new Stage();
-        stage.addActor(Scoreboard.getInstance().coinsCollectedLabel);
-        stage.addActor(Scoreboard.getInstance().pointsLabel);
-        stage.addActor(Scoreboard.getInstance().multiplierLabel);
+        Scoreboard.getInstance().addScoreboardToStage(stage);
         generateBackButton();
 
         // instantiates background
@@ -95,15 +92,13 @@ public class GameScreen implements Screen {
         game.batch.draw(background, 0, currentBgY);
         game.batch.end();
 
-        // draw the back button
+        // draw the back button and scoreboard
         stage.act(Gdx.graphics.getDeltaTime());
         stage.draw();
         stage.setDebugAll(false);
 
         // begin a new batch and draw the character, all coins, and scoreboard
         game.batch.begin();
-        Scoreboard sb = Scoreboard.getInstance();
-        sb.renderScoreboard();
         game.character.render(game.batch);
         game.cp.renderCoinPath(game.batch);
         game.powerPath.render(game.batch);

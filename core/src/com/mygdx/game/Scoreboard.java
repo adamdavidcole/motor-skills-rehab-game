@@ -5,8 +5,9 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 
-import javafx.stage.Stage;
+
 
 /**
  * A class to track game player data such as number of coins, points, and point multipliers
@@ -17,17 +18,14 @@ public class Scoreboard {
     private int points;
     private int numCoins;
     private float multiplier;
-    private float SB_LINE_HEIGHT = 30;
+    private float SB_LINE_HEIGHT = 30;   // height between scoreboard lines
     private float SB_HORIZONTAL_POS = 0;
     private float SB_VERTICAL_POS = 0;
+    // UI skin for scoreboard labels
     Skin skin = new Skin(Gdx.files.internal("uiskin.json"));
     Label coinsCollectedLabel = new Label("", skin);
     Label pointsLabel = new Label("", skin);
     Label multiplierLabel = new Label("", skin);
-
-
-
-
 
     private final int POINTS_PER_COIN = 10;
 
@@ -35,14 +33,17 @@ public class Scoreboard {
         points = 0;
         numCoins = 0;
         multiplier = 1;
+        // set size and color of sb font
         font = new BitmapFont();
         font.setColor(new Color(Color.BLACK));
         font.setScale(1.5f);
 
+        // set scale of sb labels
         coinsCollectedLabel.setFontScale(1.5f);
         pointsLabel.setFontScale(1.5f);
         multiplierLabel.setFontScale(1.5f);
 
+        // position the labels after the left gutter of the screen
         float leftGutter = (Gdx.graphics.getWidth() - GameState.GAME_WORLD_WIDTH) / 2f;
         float verticalPos = GameState.GAME_WORLD_HEIGHT - SB_VERTICAL_POS;
         coinsCollectedLabel.setPosition(leftGutter + SB_HORIZONTAL_POS, verticalPos);
@@ -68,16 +69,19 @@ public class Scoreboard {
         points += 50*POINTS_PER_COIN*multiplier;
     }
 
-    // draws the scoreboard on the game screen
-  /*  public void renderScoreboard(GameState game, int height) {
-        float verticalPos = height - SB_VERTICAL_POS;
-        font.draw(game.batch, "Coins Collected: " + numCoins, SB_HORIZONTAL_POS, verticalPos);
-        font.draw(game.batch, "Points: " + points, SB_HORIZONTAL_POS, verticalPos-SB_LINE_HEIGHT);
-        font.draw(game.batch, "Multiplier = X" + multiplier, SB_HORIZONTAL_POS,
-                verticalPos - 2 * SB_LINE_HEIGHT);
+    /**
+     * Adds the scoreboard labels to the given stage
+     */
+    public void addScoreboardToStage(Stage stage) {
+        stage.addActor(Scoreboard.getInstance().coinsCollectedLabel);
+        stage.addActor(Scoreboard.getInstance().pointsLabel);
+        stage.addActor(Scoreboard.getInstance().multiplierLabel);
+    }
 
-    }*/
-    public void renderScoreboard() {
+    /**
+     * Updates the counts of the scoreboard
+     */
+    public void updateScoreboard() {
         coinsCollectedLabel.setText("Coins Collected: " + numCoins);
         pointsLabel.setText("Points: " + points);
         multiplierLabel.setText("Multiplier = X" + multiplier);

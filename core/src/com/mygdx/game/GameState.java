@@ -124,7 +124,7 @@ public class GameState extends com.badlogic.gdx.Game {
         powerPath.update(character); // update power path
         obstaclePath.update(character);
         gameScrollSpeed += .001; // increment the game speed
-
+        Scoreboard.getInstance().updateScoreboard();
         // end game if it exceeds the duration set in settings
         checkIfGameOver();
     }

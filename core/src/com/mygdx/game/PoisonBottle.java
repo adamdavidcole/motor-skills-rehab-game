@@ -16,6 +16,7 @@ public class PoisonBottle extends Power {
     public PoisonBottle() {
         texture = new Texture(Gdx.files.internal("poisonbottle.png"));
         multiplier = 0.5f;
+        collisionSound = Gdx.audio.newSound(Gdx.files.internal("poison_sound.wav"));
         super.initTexture(texture, 0.1);
     }
 

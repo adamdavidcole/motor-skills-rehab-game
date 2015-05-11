@@ -11,15 +11,11 @@ public class DesktopLauncher {
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
         config.title = "Irish Frenzy";
-        //config.width = 800;
-        //config.height = 1280;
-        //config.resizable = false;
+        // set screen size to size of monitor
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         config.width = (int)screenSize.getWidth();
         config.height = (int)screenSize.getHeight();
-        //config.width = 800;
-        //config.height = 850;
-        config.fullscreen = false;
+        config.fullscreen = true;
         config.resizable = false;
 		new LwjglApplication(new GameState(), config);
 	}

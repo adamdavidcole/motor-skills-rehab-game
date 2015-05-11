@@ -45,6 +45,7 @@ public class PowerPath {
             }
             // if power overlaps with character, add power to character
             else if (p.getRectangle().overlaps(character.charShape) && !character.isTransperent()) {
+                if (p.collisionSound != null) p.collisionSound.play();
                 iter.remove();
                 character.powers.addPower(p);
             }
