@@ -103,7 +103,7 @@ public class SettingScreen implements Screen {
         timeSlider.addListener(new ChangeListener() {
             public void changed(ChangeEvent event, Actor actor) {
                 int value = (int)((Slider) actor).getValue();
-                GameState.gameDurationSetting = value;
+                GameState.gameDurationSettingInSec = value * 60;
                 updateTimeSliderLabel(value);
             }
         });

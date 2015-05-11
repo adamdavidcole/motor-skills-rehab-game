@@ -47,7 +47,7 @@ public class Scoreboard {
         points += 50*POINTS_PER_COIN*multiplier;
     }
 
-    // draws the scoreboard on the screen
+    // draws the scoreboard on the game screen
     public void renderScoreboard(GameState game, int height) {
         float verticalPos = height - SB_VERTICAL_POS;
         font.draw(game.batch, "Coins Collected: " + numCoins, SB_HORIZONTAL_POS, verticalPos);
@@ -55,6 +55,16 @@ public class Scoreboard {
         font.draw(game.batch, "Multiplier = X" + multiplier, SB_HORIZONTAL_POS,
                 verticalPos - 2 * SB_LINE_HEIGHT);
 
+    }
+
+    /**
+     * Scoreboard rendered in the final game over screen
+     */
+    public void renderGameOverScoreboard(GameState game, int height) {
+        float verticalOffset = - 100;
+        font.draw(game.batch, "Coins Collected: " + numCoins, game.GAME_WORLD_WIDTH / 2 + verticalOffset, game.GAME_WORLD_HEIGHT / 2);
+        font.draw(game.batch, "Points: " + points,  game.GAME_WORLD_WIDTH / 2 + verticalOffset, game.GAME_WORLD_HEIGHT / 2 - SB_LINE_HEIGHT);
+        //font.draw(game.batch, "Multiplier = X" + multiplier,  game.GAME_WORLD_WIDTH / 2 - 100, game.GAME_WORLD_HEIGHT / 2 - 2 * SB_LINE_HEIGHT);
     }
 
     public void setMultiplier(float mult) {

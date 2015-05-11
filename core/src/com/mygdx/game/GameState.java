@@ -16,6 +16,8 @@ public class GameState extends com.badlogic.gdx.Game {
     public static OrthographicCamera camera;
     public static int GAME_WORLD_WIDTH;
     public static int GAME_WORLD_HEIGHT;
+    private int ONE_SEC_IN_MILLIS = 1000;
+    private static int defaultStartingDurationInMin = 10;
 
     // physical game state components
     public Character character;
@@ -33,10 +35,16 @@ public class GameState extends com.badlogic.gdx.Game {
     // internal game state
     public Long startTime = System.currentTimeMillis();
     public boolean isRunning = false;
+    // default difficulty level
     public static int difficultySetting = 1;
+    // default speed of scrolling coins
     public static float gameScrollSpeed = 75 + 25 * difficultySetting;
-    public static int gameDurationSetting = 15*60;
+    // default duration of game
+    public static int gameDurationSettingInSec = (int)(defaultStartingDurationInMin*60);
+    // default range of motion velocity setting
     public static int rangeOfMotionSetting = 1;
+    // display countdown set to not show
+    public int displayCountdown = -1;
 
 
     /**
@@ -134,16 +142,25 @@ public class GameState extends com.badlogic.gdx.Game {
     /**
      * Compares how long the game has been running to the duration of the game
      * set in settings and closes the game when the duration is exceeded.
+     *
+     * If within 10 seconds of ending, sets countdown to display remaining duration in seconds
      */
     public void checkIfGameOver() {
-        //Return to MainMenu Screen after a minutes of game play
-        long timeGameHasBeenRunning = (System.currentTimeMillis() - startTime);
-        if (timeGameHasBeenRunning > gameDurationSetting * 1000 * 60){
+        // check if countdown should be displayed for last 10 seconds
+        long timeGameHasBeenRunningInMillis = (System.currentTimeMillis() - startTime);
+        long timeReaminingInMillis = gameDurationSettingInSec * 1000 - timeGameHasBeenRunningInMillis;
+        if (timeReaminingInMillis <= 10 * ONE_SEC_IN_MILLIS) {
+            // set countdown to display in seconds
+            displayCountdown = (int)(timeReaminingInMillis / ONE_SEC_IN_MILLIS);
+
+        }
+
+        //Return to MainMenu Screen after duration of game play
+        if (timeGameHasBeenRunningInMillis > gameDurationSettingInSec * ONE_SEC_IN_MILLIS){
             dataFile.close();
             this.setScreen(new GameEndScreen(this));
         }
     }
-
 
     /**
      * Pauses the state of the game

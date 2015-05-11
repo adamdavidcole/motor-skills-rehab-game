@@ -178,11 +178,11 @@ public class Wind {
     }
 
     // returns the amount the character should be pushed by wind (1 and -1 represent normal character movement)
-    public double shiftAmount(){
+    public float shiftAmount(){
         if (onRight) {
-            return -.3;
+            return -.3f;
         }
-        return .3;
+        return .3f;
     }
 
     // removes media files for memory

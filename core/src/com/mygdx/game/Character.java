@@ -29,6 +29,8 @@ public class Character {
 
     private boolean transperent = false;      // whether character can collect
     private int collisionCounter;             // tracks how long character should remain transparent
+    // orientation of character image to be rendered
+    public characterOrientation orientation = characterOrientation.NONE;
 
     /**
      * Character constructor creates character textures, shapes, and power container
@@ -86,9 +88,9 @@ public class Character {
 
         if (powers.isPoisoned()) {
             batch.draw(characterImagePoisoned, charShape.x, charShape.y);
-        } else if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+        } else if (orientation == characterOrientation.LEFT) {
             batch.draw(characterImageLeanLeft, charShape.x, charShape.y);
-        } else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+        } else if (orientation == characterOrientation.RIGHT) {
             batch.draw(characterImageLeanRight, charShape.x, charShape.y);
         }
         else batch.draw(characterImage, charShape.x, charShape.y);
@@ -102,6 +104,20 @@ public class Character {
     }
 
     /**
+     * Sets x position of character
+     */
+    public void setHorizontalPos(int x){
+        charShape.x = x;
+    }
+
+    /**
+     * Sets y position of character
+     */
+    public void setVerticalPos(int y){
+        charShape.y = y;
+    }
+
+    /**
      * Returns width of character shape
      */
     public int getWidth() {
@@ -109,18 +125,25 @@ public class Character {
     }
 
     /**
-     * Shift character's position x spots relative to current position. Amount shifted
+     * Shift character's horizontal position x spots relative to current position. Amount shifted
      * is dependent on user's range of motion.
      */
-    public void shiftCharacter(double x) {
+    public void shiftCharacterHorizontally(float x) {
         // velocity of character is calculated using range of motion
         int shiftVelocity = MAX_RANGE_OF_MOTION - GameState.rangeOfMotionSetting;
         // Shift character horizontally according to velocity
-        charShape.setPosition((int)(charShape.x + x * shiftVelocity),charShape.y);
+        charShape.setPosition(charShape.x + x * shiftVelocity,charShape.y);
     }
 
     /**
-     * Update state of character including position and powers
+     * Shift character's vertical position y spots relative to current position.
+     */
+    public void shiftCharacterVertically(float y) {
+        charShape.setPosition(charShape.x, charShape.y - y);
+    }
+
+    /**
+     * Update state of character including position, orientation and powers
      */
     public void update() {
         // update position using touch down position - for testing purposes only
@@ -130,15 +153,22 @@ public class Character {
             charShape.setPosition((int) (touchPos.x - charShape.width / 2), charShape.y);
         }
 
-        // update position of character by one unit using keypad
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && powers.isPoisoned())
-            shiftCharacter(1);
-        else if (Gdx.input.isKeyPressed(Input.Keys.LEFT))
-            shiftCharacter(-1);
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && powers.isPoisoned())
-            shiftCharacter(-1);
-        else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT))
-            shiftCharacter(1);
+        // update position and orientation of character by one unit using keypad
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && powers.isPoisoned()) {
+            shiftCharacterHorizontally(1);
+        }
+        else if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+            shiftCharacterHorizontally(-1);
+            orientation = characterOrientation.LEFT;
+        }
+        else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && powers.isPoisoned()) {
+            shiftCharacterHorizontally(-1);
+        }
+        else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+            shiftCharacterHorizontally(1);
+            orientation = characterOrientation.RIGHT;
+        } else orientation = characterOrientation.NONE;
+
 
         // make sure character stays within bounds of screen
         if (charShape.x < 0)

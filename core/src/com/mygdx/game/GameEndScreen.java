@@ -2,6 +2,8 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -12,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.TimeUtils;
 
 
 public class GameEndScreen implements Screen {
@@ -19,20 +22,43 @@ public class GameEndScreen implements Screen {
     private Texture background;
     private Stage stage;
     private Sprite sprite;
+    long startTime;
+    // character instance that falls gradually while screen is shown
+    Character character = new Character(game.GAME_WORLD_WIDTH, game.GAME_WORLD_HEIGHT);
+    // determines if character orientation is right or left
+    boolean isCharacterShiftingLeft;
+    // applause sound when game over screen is shown
+    private Sound gameOverSound;
+    // game over music
+    public Music gameOverMusic; // end game music
+
+
 
     /**
-     * Game End screen constructor. Instantiates the background and initializes the scoreboard, back button
-     * and fields.
+     * Game End screen constructor. Instantiates the background and initializes the scoreboard,
+     * back button and fields.
      * @param gam
      */
     public GameEndScreen(final GameState gam){
         game = gam;
-        background = new Texture(Gdx.files.internal("menuBG2.png"));
+        background = new Texture(Gdx.files.internal("gameOverBG.png"));
         sprite = new Sprite(background);
         sprite.setSize(game.GAME_WORLD_WIDTH,game.GAME_WORLD_HEIGHT);
+
         // creates the button to go back to the main menu
         generateBackButton();
 
+        startTime = TimeUtils.nanoTime();
+
+        // set character starting pos
+        character.setVerticalPos((int)(game.GAME_WORLD_HEIGHT));
+        character.setHorizontalPos((int)(game.GAME_WORLD_WIDTH/2 - character.charShape.width/2));
+
+        // set audio files for game over sounds and music
+        gameOverSound = Gdx.audio.newSound(Gdx.files.internal("applause.wav"));
+        gameOverSound.play();
+        gameOverMusic = Gdx.audio.newMusic(Gdx.files.internal("gameOverSong.mp3"));
+        gameOverMusic.play();
     }
     /**
      * Renders the login screen
@@ -41,6 +67,7 @@ public class GameEndScreen implements Screen {
     @Override
     public void render(float delta) {
         game.camera.update();
+        //character.update();
         Gdx.gl.glClearColor(.005f, .006f, .121f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
@@ -48,15 +75,39 @@ public class GameEndScreen implements Screen {
         game.batch.begin();
         game.batch.setProjectionMatrix(game.camera.combined);
         sprite.draw(game.batch);
+        character.render(game.batch);
+        System.out.println("cx: " + character.getX() + "; cy: " + character.charShape.y);
         Scoreboard sb = Scoreboard.getInstance();
-        sb.renderScoreboard(game, game.GAME_WORLD_HEIGHT);
+        sb.renderGameOverScoreboard(game, game.GAME_WORLD_HEIGHT);
         game.batch.end();
 
-
+        System.out.println(character.charShape.x);
         // draw the back button
         stage.act(Gdx.graphics.getDeltaTime());
         stage.draw();
         stage.setDebugAll(false);
+        // make character fall from right to left
+        updateFallingCharaterPosition();
+    }
+
+    /**
+     * Character position falls and moves right to left gradually.
+     */
+    public void updateFallingCharaterPosition() {
+        if (TimeUtils.timeSinceNanos(startTime) > 10000000) {
+            character.shiftCharacterVertically(.5f);
+            if (isCharacterShiftingLeft) {
+                character.shiftCharacterHorizontally(-.3f);
+                character.orientation = characterOrientation.LEFT;
+                if (character.getX() < game.GAME_WORLD_WIDTH * 0.2) isCharacterShiftingLeft = !isCharacterShiftingLeft;
+            } else {
+                character.shiftCharacterHorizontally(0.3f);
+                character.orientation = characterOrientation.RIGHT;
+                if (character.getX() > game.GAME_WORLD_WIDTH * .8) isCharacterShiftingLeft = !isCharacterShiftingLeft;
+            }
+
+            startTime = TimeUtils.nanoTime();
+        }
     }
 
     /**
@@ -101,6 +152,7 @@ public class GameEndScreen implements Screen {
 
     @Override
     public void pause() {
+        gameOverMusic.stop();
     }
 
     @Override
@@ -109,6 +161,7 @@ public class GameEndScreen implements Screen {
 
     @Override
     public void hide() {
+        gameOverMusic.stop();
     }
 
     @Override
