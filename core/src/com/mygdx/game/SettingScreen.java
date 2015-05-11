@@ -3,7 +3,6 @@ package com.mygdx.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -51,6 +50,7 @@ public class SettingScreen implements Screen {
         //create the table for the sliders
         Table sliderTable = new Table();
         sliderTable.setFillParent(true);
+        sliderTable.bottom().padBottom(50);
 
         //create diffSlider
         diffSliderLabel = new Label("Difficulty: Very Easy", skin);
@@ -148,6 +148,7 @@ public class SettingScreen implements Screen {
 
     }
 
+    //updates range of motion to slider value
     private void updateRangeSliderLabel(int value){
         if(value == 1){
             rangeSliderLabel.setText("Range of Motion: Low");
