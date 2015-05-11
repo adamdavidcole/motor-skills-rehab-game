@@ -3,8 +3,10 @@ package com.mygdx.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -35,6 +37,10 @@ public class GameScreen implements Screen {
 
 
     private long ONE_SEC_IN_NANO = 10000000;
+    private BitmapFont countdownFont;
+
+
+
     /**
      * Game screen constructor initializes game stage, soundtrack, and moving background
      * @param gam
@@ -55,6 +61,10 @@ public class GameScreen implements Screen {
         currentBgY = game.GAME_WORLD_HEIGHT;
         // last time background looped
         lastTimeBg = TimeUtils.nanoTime();
+
+        countdownFont = new BitmapFont();
+        countdownFont.setColor(new Color(Color.BLACK));
+        countdownFont.setScale(5f);
     }
 
     /**
@@ -86,6 +96,12 @@ public class GameScreen implements Screen {
         game.powerPath.render(game.batch);
         game.obstaclePath.render(game.batch);
 
+        // if countdown is within 10 seconds of game ending, render countdown
+        if (game.displayCountdown >= 0 && game.displayCountdown <= 10) {
+            // for last 3 seconds, render countdown in red
+            if (game.displayCountdown <= 3) countdownFont.setColor(Color.RED);
+            countdownFont.draw(game.batch, ""+game.displayCountdown, game.GAME_WORLD_WIDTH /2 - 25, game.GAME_WORLD_HEIGHT /2);
+        }
         ////////////////////////////////////////////////////////////////////////
         //// WIND GRAPHICS (cannot be done outside of class due to how libGDX works)
         if (game.wind.windActive) {
@@ -118,8 +134,13 @@ public class GameScreen implements Screen {
         if(currentBgY > game.GAME_WORLD_HEIGHT){
             currentBgY = 0;
         }
+
+
     }
 
+    public void displayCountdown(int countdown) {
+
+    }
 
     @Override
     public void resize(int width, int height) {
@@ -162,7 +183,7 @@ public class GameScreen implements Screen {
         if (game.wind.windBlowing) {
             game.wind.render(game.batch);
             // character is blown by the wind
-            game.character.shiftCharacter(game.wind.shiftAmount());
+            game.character.shiftCharacterHorizontally(game.wind.shiftAmount());
         } else { // wind not blowing, but active - 3 options: alerting, entering, exiting
             if (game.wind.exiting()){ // if exiting (the check updates the position)
                 game.wind.render(game.batch);
