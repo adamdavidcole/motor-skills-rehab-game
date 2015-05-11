@@ -53,10 +53,12 @@ public class Character {
     }
 
     /**
-     * Render appropriate image for character depending on state
+     * Render appropriate image for character depending on state. Image shifts left and right
+     * if arrow keys pressed to mimick falling air balloon effect.
      * @param batch
      */
     public void render(SpriteBatch batch) {
+        // draw the correct image based on the state of the character and inputs
         if (powers.isPoisoned()) {
             batch.draw(characterImagePoisoned, charShape.x, charShape.y);
         } else if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
