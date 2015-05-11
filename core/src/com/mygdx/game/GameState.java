@@ -140,7 +140,7 @@ public class GameState extends com.badlogic.gdx.Game {
         long timeGameHasBeenRunning = (System.currentTimeMillis() - startTime);
         if (timeGameHasBeenRunning > gameDurationSetting * 1000 * 60){
             dataFile.close();
-            this.setScreen(new MainMenu(this));
+            this.setScreen(new GameEndScreen(this));
         }
     }
 

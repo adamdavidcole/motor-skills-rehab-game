@@ -3,7 +3,6 @@ package com.mygdx.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -12,7 +11,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 
 /**
  * Generates the main menu screen with options to quit, change settings, and play game
@@ -43,11 +41,10 @@ public class MainMenu implements Screen {
         stage = new Stage();
         Gdx.input.setInputProcessor(stage);
 
-
         //create button table to hold textbuttons: play, settings and quit
         Table buttonTable = new Table();
         buttonTable.setFillParent(true);
-
+        buttonTable.bottom().padBottom(125);
 
         //create button style
         Texture buttonTexture = new Texture(Gdx.files.internal("MainMenuButton.png"));
@@ -55,15 +52,16 @@ public class MainMenu implements Screen {
         buttonStyle.font = game.font;
         buttonStyle.up = new TextureRegionDrawable(new TextureRegion(buttonTexture));
 
+
         //create play button
         TextButton playButton = new TextButton("PLAY", buttonStyle);
         buttonTable.add(playButton);
-        buttonTable.row();
+
 
         //create settings button
         TextButton settingsButton = new TextButton("SETTINGS", buttonStyle);
         buttonTable.add(settingsButton);
-        buttonTable.row();
+
 
         //create quit button
         TextButton quitButton = new TextButton("QUIT", buttonStyle);
@@ -75,13 +73,10 @@ public class MainMenu implements Screen {
         playButton.addListener(new ChangeListener() {
             @Override
             public void changed (ChangeEvent event, Actor actor) {
-                System.out.println("CLICKED");
                 //move to gameplay screen
-               // game.instantiateDataFile();
                 game.setScreen(new GameScreen(game));
             }
         });
-        playButton.setPosition(600,400);
 
         //add a listener for settings button
         settingsButton.addListener(new ChangeListener() {
@@ -92,17 +87,14 @@ public class MainMenu implements Screen {
             }
         });
 
-
         //add a listener for the quit button
         quitButton.addListener(new ChangeListener() {
             @Override
             public void changed (ChangeEvent event, Actor actor) {
-                //System.out.println("CLICKED");
                 //quit the app
                 Gdx.app.exit();
             }
         });
-
     }
 
 
