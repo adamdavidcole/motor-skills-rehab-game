@@ -10,6 +10,8 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
@@ -53,6 +55,10 @@ public class GameScreen implements Screen {
         soundtrack = new Soundtrack();
 
         // creates the button to go back to the main menu
+        stage = new Stage();
+        stage.addActor(Scoreboard.getInstance().coinsCollectedLabel);
+        stage.addActor(Scoreboard.getInstance().pointsLabel);
+        stage.addActor(Scoreboard.getInstance().multiplierLabel);
         generateBackButton();
 
         // instantiates background
@@ -84,13 +90,20 @@ public class GameScreen implements Screen {
         // coordinate system specified by the camera.
         game.batch.setProjectionMatrix(game.camera.combined);
 
-        // begin a new batch and draw the character, all coins, and scoreboard
         game.batch.begin();
         game.batch.draw(background, 0, currentBgY - game.GAME_WORLD_HEIGHT);
         game.batch.draw(background, 0, currentBgY);
-        Scoreboard sb = Scoreboard.getInstance();
+        game.batch.end();
 
-        sb.renderScoreboard(game, game.GAME_WORLD_HEIGHT);
+        // draw the back button
+        stage.act(Gdx.graphics.getDeltaTime());
+        stage.draw();
+        stage.setDebugAll(false);
+
+        // begin a new batch and draw the character, all coins, and scoreboard
+        game.batch.begin();
+        Scoreboard sb = Scoreboard.getInstance();
+        sb.renderScoreboard();
         game.character.render(game.batch);
         game.cp.renderCoinPath(game.batch);
         game.powerPath.render(game.batch);
@@ -110,11 +123,6 @@ public class GameScreen implements Screen {
 
         game.batch.end();
 
-
-        // draw the back button
-        stage.act(Gdx.graphics.getDeltaTime());
-        stage.draw();
-        stage.setDebugAll(false);
 
 
         // move the moving background separator each second
@@ -236,7 +244,6 @@ public class GameScreen implements Screen {
      */
     private void generateBackButton () {
         //create the stage for buttons
-        stage = new Stage();
         Gdx.input.setInputProcessor(stage);
 
         //create button table to hold textbuttons: play, settings and quit
