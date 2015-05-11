@@ -106,22 +106,38 @@ public class GameScreen implements Screen {
         game.powerPath.render(game.batch);
         game.obstaclePath.render(game.batch);
 
-        // if countdown is within 10 seconds of game ending, render countdown
-        if (game.displayCountdown >= 0 && game.displayCountdown <= 10) {
-            // for last 3 seconds, render countdown in red
-            if (game.displayCountdown <= 3) countdownFont.setColor(Color.RED);
-            countdownFont.draw(game.batch, ""+game.displayCountdown, game.GAME_WORLD_WIDTH /2 - 25, game.GAME_WORLD_HEIGHT /2);
-        }
-        ////////////////////////////////////////////////////////////////////////
-        //// WIND GRAPHICS (cannot be done outside of class due to how libGDX works)
+        updateCountdow();   // updates and draws countdown for last 10 seconds
+
+        // WIND GRAPHICS (cannot be done outside of class due to how libGDX works)
         if (game.wind.windActive) {
             renderWind();
         }
 
         game.batch.end();
 
+        if (!game.wind.windActive) {
+            loadWind();
+        }
 
+        updateBackgroundScroll();
+    }
 
+    /**
+     * Updates and renders countdown for last 10 seconds of duration
+     */
+    public void updateCountdow() {
+        // if countdown is within 10 seconds of game ending, render countdown
+        if (game.displayCountdown >= 0 && game.displayCountdown <= 10) {
+            // for last 3 seconds, render countdown in red
+            if (game.displayCountdown <= 3) countdownFont.setColor(Color.RED);
+            countdownFont.draw(game.batch, ""+game.displayCountdown, game.GAME_WORLD_WIDTH /2 - 25, game.GAME_WORLD_HEIGHT /2);
+        }
+    }
+
+    /**
+     * Updates and loops the scrolling background
+     */
+    public void updateBackgroundScroll() {
         // move the moving background separator each second
         if(TimeUtils.nanoTime() - lastTimeBg > ONE_SEC_IN_NANO){
             // move the separator 1 unit
@@ -130,20 +146,10 @@ public class GameScreen implements Screen {
             lastTimeBg = TimeUtils.nanoTime();
         }
 
-        if (!game.wind.windActive) {
-            loadWind();
-        }
-
-
-       // if the background separator reaches the screen edge, move it back to the first position
+        // if the background separator reaches the screen edge, move it back to the first position
         if(currentBgY > game.GAME_WORLD_HEIGHT){
             currentBgY = 0;
         }
-
-
-    }
-
-    public void displayCountdown(int countdown) {
 
     }
 
