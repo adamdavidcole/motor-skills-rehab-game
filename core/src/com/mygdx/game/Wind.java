@@ -135,7 +135,7 @@ public class Wind {
 
     // returns how long wind will blow for
     public int update() {
-        if (TimeUtils.millis() - lastTimeSpawned > 15000 && Math.random() > .996) {
+        if (TimeUtils.millis() - lastTimeSpawned > 50000 && Math.random() > .999) {
             // update Time
             lastTimeSpawned=TimeUtils.millis();
             return (int)((strength*Math.random())+strength);

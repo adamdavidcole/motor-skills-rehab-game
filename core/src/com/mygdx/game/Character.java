@@ -23,7 +23,7 @@ public class Character {
     public Rectangle charShape;              // physical representation of character
     public PowerContainer powers;            // container of powers character has
 
-    private float CHARACTER_SCALE_FACTOR = 0.35f; // scale factor for character images
+    private float CHARACTER_SCALE_FACTOR = 0.4f; // scale factor for character images
     private int VERTICAL_POS_OFFSET = 75;         // space above character and below top of screen
     private int MAX_RANGE_OF_MOTION = 5;          // maximum range of motion setting
 
