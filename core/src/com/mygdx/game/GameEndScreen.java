@@ -46,7 +46,7 @@ public class GameEndScreen implements Screen {
         sprite.setSize(game.GAME_WORLD_WIDTH,game.GAME_WORLD_HEIGHT);
 
         // creates the button to go back to the main menu
-        generateBackButton();
+        generateQuitButton();
 
         startTime = TimeUtils.nanoTime();
 
@@ -111,9 +111,9 @@ public class GameEndScreen implements Screen {
     }
 
     /**
-     * Genrates the back button that returns user to main menu screen
+     * Genrates the quit button that quits game
      */
-    private void generateBackButton () {
+    private void generateQuitButton () {
         //create the stage for buttons
         stage = new Stage();
         Gdx.input.setInputProcessor(stage);
@@ -129,17 +129,17 @@ public class GameEndScreen implements Screen {
         buttonStyle.up = new TextureRegionDrawable(new TextureRegion(buttonTexture));
 
         //create back button
-        TextButton backButton = new TextButton("BACK", buttonStyle);
-        buttonTable.add(backButton);
+        TextButton quitButton = new TextButton("QUIT", buttonStyle);
+        buttonTable.add(quitButton);
         buttonTable.bottom().padBottom(125);
         stage.addActor(buttonTable);
 
         //add a listener for the back button
-        backButton.addListener(new ChangeListener() {
+        quitButton.addListener(new ChangeListener() {
             @Override
             public void changed (ChangeEvent event, Actor actor) {
-                //back to main menu of the app
-                game.setScreen(new MainMenu(game));
+                //quit the app
+                Gdx.app.exit();
             }
         });
     }

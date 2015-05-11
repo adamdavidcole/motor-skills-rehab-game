@@ -55,6 +55,8 @@ public class SettingScreen implements Screen {
         //create diffSlider
         diffSliderLabel = new Label("Difficulty: Very Easy", skin);
         Slider diffSlider = new Slider(1f, 5f, 1f, false, skin);
+        diffSlider.setValue(game.difficultySetting);
+        updateDiffSliderLabel(game.difficultySetting);
         sliderTable.add(diffSliderLabel);
         sliderTable.row();
         sliderTable.add(diffSlider);
@@ -63,6 +65,8 @@ public class SettingScreen implements Screen {
         //create rangeSlider
         rangeSliderLabel = new Label("Range of Motion: Low", skin);
         Slider rangeSlider = new Slider(1f, 3f, 1f, false, skin);
+        rangeSlider.setValue(game.rangeOfMotionSetting);
+        updateRangeSliderLabel(game.rangeOfMotionSetting);
         sliderTable.add(rangeSliderLabel);
         sliderTable.row();
         sliderTable.add(rangeSlider);
@@ -71,6 +75,8 @@ public class SettingScreen implements Screen {
         //create timeSlider
         timeSliderLabel = new Label("Game Play Duration: 1 Minute", skin);
         Slider timeSlider = new Slider(1f, 15f, 1f, false, skin);
+        timeSlider.setValue(game.gameDurationSettingInSec / 60);
+        updateTimeSliderLabel(game.gameDurationSettingInSec / 60);
         sliderTable.add(timeSliderLabel);
         sliderTable.row();
         sliderTable.add(timeSlider);
@@ -121,7 +127,6 @@ public class SettingScreen implements Screen {
         playButton.addListener(new ChangeListener() {
             @Override
             public void changed (ChangeEvent event, Actor actor) {
-                System.out.println("CLICKED");
                 //move to gameplay screen
                 game.setScreen(new GameScreen(game));
             }
