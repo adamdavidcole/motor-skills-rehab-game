@@ -15,7 +15,7 @@ public class DesktopLauncher {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         config.width = (int)screenSize.getWidth();
         config.height = (int)screenSize.getHeight();
-        config.fullscreen = true;
+        config.fullscreen = false;
         config.resizable = false;
 		new LwjglApplication(new GameState(), config);
 	}
