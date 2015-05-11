@@ -1,7 +1,7 @@
 package com.mygdx.game;
 
 /**
- * Created by acole9 on 5/11/15.
+ * Enumneration for the various orientation of the character image
  */
 public enum characterOrientation {
       NONE, LEFT, RIGHT
